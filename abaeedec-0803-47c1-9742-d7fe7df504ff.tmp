@@ -1,0 +1,376 @@
+# Expertise-Tiered AI Discourse on Reddit
+
+This repository contains the data-processing, statistical-analysis, robustness-testing, and visualization code for the research paper:
+
+**“Expertise-Tiered AI Discourse on Reddit: A Computational Linguistic Analysis of Community-Rewarded Register Variation.”**
+
+The study examines how linguistic patterns differ across AI-related Reddit communities with different expected audience expertise levels.
+
+## Research Question
+
+**How do community-rewarded linguistic patterns differ across Reddit communities with different expected audience expertise levels, and which features distinguish those tiers most reliably?**
+
+The study does **not** attempt to infer the verified expertise of individual Reddit users or demonstrate within-author audience adaptation. Expertise is operationalized at the **subreddit level**, and the analysis is interpreted as evidence of community-level register variation.
+
+## Dataset
+
+The final dataset contains:
+
+- **1,778 Reddit posts**
+- **9 subreddits**
+- **3 expected-audience expertise tiers**
+- Approximately **192–200 posts per subreddit**
+- Posts published between **April 2025 and April 2026**
+
+The dataset prioritizes highly scored posts in order to study language that communities appear to reward rather than average posting behavior.
+
+### Expertise Tiers
+
+| Tier | Subreddits |
+|---|---|
+| Low | `r/explainlikeimfive`, `r/Futurology`, `r/GenerativeAI` |
+| Medium | `r/ChatGPT`, `r/learnmachinelearning`, `r/OpenAI` |
+| High | `r/LocalLLaMA`, `r/MachineLearning`, `r/deeplearning` |
+
+Tier assignments were based on community-level characteristics including:
+
+- density of technical terminology;
+- whether explanations tended to be intuitive or implementation-oriented;
+- domain proficiency implied by subreddit rules and typical discussions.
+
+These tiers describe **expected audience expertise and community norms**, not verified author expertise.
+
+## Data Collection
+
+Posts were collected through the Reddit REST API using Python.
+
+The target was approximately 200 eligible posts per subreddit.
+
+The scraper prioritized highly scored posts from the following overlapping time windows:
+
+1. one year;
+2. one month;
+3. one week.
+
+If the one-year query did not produce enough eligible unique posts, the shorter windows were used to supplement the sample.
+
+Posts appearing in more than one retrieval window were retained only once.
+
+### Exclusion Criteria
+
+Posts were removed if they were:
+
+- shorter than 50 words after preprocessing;
+- duplicate Reddit post IDs;
+- exact duplicates after text cleaning;
+- deleted or removed;
+- identified as likely bot-generated posts using a rule-based heuristic.
+
+Post titles were retained as metadata but were **not included in the linguistic analysis**.
+
+## Linguistic Measures
+
+The analysis examined multiple aspects of linguistic register.
+
+### Readability
+
+- Flesch-Kincaid Grade Level
+- Gunning Fog Index
+- SMOG Index
+- Average sentence length
+- Average syllables per word
+
+### Lexical Diversity
+
+- Type-Token Ratio (TTR)
+- Moving Average Type-Token Ratio (MATTR), using a 25-word sliding window
+
+### Discourse Features
+
+- Hedge words per 100 words
+- Causal connectives per 100 words
+
+### Sentiment
+
+Sentiment was measured using VADER:
+
+- positive sentiment;
+- negative sentiment;
+- neutral sentiment;
+- compound sentiment.
+
+Sentiment analysis was treated as a **secondary exploratory analysis** rather than the central research question.
+
+## Statistical Analysis
+
+The primary analysis used:
+
+- Kruskal-Wallis tests;
+- Dunn post hoc tests with Bonferroni correction;
+- Cohen's d effect sizes for high-versus-low comparisons;
+- partial correlations controlling for post length;
+- Benjamini-Hochberg false discovery rate correction.
+
+The main interpretation prioritizes results that showed:
+
+1. statistically reliable tier differences;
+2. non-trivial effect sizes;
+3. robustness after controlling for post length;
+4. consistency across sensitivity analyses.
+
+## Main Finding
+
+The strongest and most consistent result was **average syllables per word**, used as a syllable-based proxy for lexical complexity.
+
+Mean values were approximately:
+
+| Tier | Mean syllables per word |
+|---|---:|
+| Low | 1.534 |
+| Medium | 1.536 |
+| High | 1.626 |
+
+The primary Kruskal-Wallis test produced:
+
+**H = 89.90, p < .001**
+
+The high-versus-low effect size was:
+
+**Cohen's d = 0.521**
+
+The result remained significant after controlling for post length.
+
+Broader readability formulas produced statistically significant raw differences in some analyses, but their effect sizes were generally small, inconsistent, or confounded by post length.
+
+The study therefore interprets the main pattern as a difference in **lexical register**, rather than a simple increase in sentence length or general grade-level readability.
+
+## Acronym Robustness Analysis
+
+Because technical AI communities contain many acronyms, additional analyses tested whether acronym counting could explain the syllable-complexity result.
+
+The robustness analysis:
+
+- measured acronym density per 100 words;
+- removed detected acronyms before recalculating syllables per word;
+- replaced detected acronyms with a one-syllable placeholder;
+- controlled statistically for acronym density.
+
+The high-tier lexical-complexity effect persisted across these conditions.
+
+This suggests that acronym use contributes to technical register but does not account for the main result by itself.
+
+## Leave-One-Subreddit-Out Robustness Analysis
+
+Posts are nested within only nine subreddits, so a leave-one-subreddit-out analysis tested whether the central result depended on any single community.
+
+Each iteration removed one subreddit and repeated the relevant analyses.
+
+The high-tier mean for average syllables per word remained above both other tiers in **all nine runs**, and the main omnibus comparison remained significant.
+
+The largest reduction in the high-versus-low effect occurred when `r/explainlikeimfive` was removed, indicating that its explicit simplification norm strengthens the contrast.
+
+The main result nevertheless remained statistically significant.
+
+## Multiple-Testing Correction
+
+Benjamini-Hochberg false discovery rate correction was applied separately to:
+
+- omnibus Kruskal-Wallis tests;
+- Dunn metric-by-tier pair comparisons;
+- length-controlled partial correlations.
+
+The central average-syllables-per-word result survived correction across the primary analyses.
+
+Several weaker findings, including some results for causal connectives, hedging, readability, and lexical diversity, did not survive consistently and are interpreted cautiously.
+
+## Machine-Learning Analysis
+
+Machine-learning models were used as supplementary evidence for whether the measured linguistic features contained tier information.
+
+Models included:
+
+- Logistic Regression;
+- Random Forest.
+
+Only computed linguistic features were supplied to the models.
+
+Subreddit names, raw text, titles, scores, comments, timestamps, and other metadata were excluded.
+
+### Three-Class Classification
+
+Low / Medium / High:
+
+| Model | Accuracy | Macro-F1 |
+|---|---:|---:|
+| Logistic Regression | 0.455 | 0.45 |
+| Random Forest | 0.405 | 0.40 |
+| Shuffled-label baseline | 0.336 | — |
+
+### Binary High-vs-Low Classification
+
+Logistic Regression achieved:
+
+- **Accuracy: 0.647**
+- **Macro-F1: 0.64**
+
+These models are interpreted as supporting evidence for a limited community-level linguistic signal, not as systems capable of reliably inferring the expertise of individual users.
+
+## Secondary Sentiment Finding
+
+High-tier communities showed:
+
+- higher compound VADER sentiment;
+- lower negative sentiment.
+
+Positive sentiment itself did not differ significantly.
+
+Because subreddit topic mix, sampling strategy, and VADER's limitations on technical language may influence this pattern, sentiment is treated as **exploratory** rather than as a central structural finding.
+
+## Repository Structure
+
+```text
+reddit-expertise-register-analysis/
+│
+├── README.md
+├── LICENSE
+├── requirements.txt
+├── CITATION.cff
+│
+├── data/
+│   ├── README.md
+│   ├── reddit_posts_deidentified.csv
+│   └── subreddit_tier_mapping.csv
+│
+├── analysis/
+│   ├── 01_preprocessing.py
+│   ├── 02_linguistic_features.py
+│   ├── 03_primary_statistics.py
+│   ├── 04_partial_correlations.py
+│   ├── 05_fdr_correction.py
+│   ├── 06_acronym_robustness.py
+│   ├── 07_leave_one_subreddit_out.py
+│   ├── 08_classification.py
+│   └── 09_generate_figures.py
+│
+├── results/
+│   ├── primary_statistics.csv
+│   ├── partial_correlations.csv
+│   ├── fdr_results.csv
+│   ├── acronym_robustness.csv
+│   ├── leave_one_subreddit_out.csv
+│   └── classifier_results.csv
+│
+├── figures/
+│   ├── figure_1_word_count.png
+│   ├── figure_2_syllables_per_word.png
+│   ├── figure_3_fk_distribution.png
+│   ├── figure_4_acronym_robustness.png
+│   ├── figure_5_loso_effect_sizes.png
+│   ├── figure_6_hedging.png
+│   ├── figure_7_sentiment.png
+│   ├── figure_8_feature_profiles.png
+│   ├── figure_9_partial_correlations.png
+│   └── figure_10_feature_importance.png
+│
+└── docs/
+    └── methodology_notes.md
+```
+
+## Reproducing the Analysis
+
+Clone the repository:
+
+```bash
+git clone https://github.com/<USERNAME>/reddit-expertise-register-analysis.git
+cd reddit-expertise-register-analysis
+```
+
+Create and activate a virtual environment if desired, then install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run the analysis scripts in numerical order:
+
+```bash
+python analysis/01_preprocessing.py
+python analysis/02_linguistic_features.py
+python analysis/03_primary_statistics.py
+python analysis/04_partial_correlations.py
+python analysis/05_fdr_correction.py
+python analysis/06_acronym_robustness.py
+python analysis/07_leave_one_subreddit_out.py
+python analysis/08_classification.py
+python analysis/09_generate_figures.py
+```
+
+Outputs are written to the `results/` and `figures/` directories.
+
+## Design Boundaries
+
+Several important limitations should be kept in mind when interpreting the results.
+
+### Community-Level Expertise
+
+Expertise tier is assigned to subreddits rather than individual users. The study does not verify author expertise.
+
+### Nested Data
+
+The dataset contains 1,778 posts but only nine subreddit-level communities, three per expertise tier.
+
+Post-level tests may therefore appear more precise than the community structure warrants.
+
+The leave-one-subreddit-out analysis tests dependence on individual communities but does not eliminate this nesting issue.
+
+### Highly Scored Sampling
+
+The analysis prioritizes highly scored posts.
+
+The dataset should therefore be interpreted as **community-rewarded discourse**, not as a representative sample of everything posted in each subreddit.
+
+### Topic Differences
+
+The selected communities do not necessarily discuss identical AI topics.
+
+Topic mix may contribute to some linguistic differences, especially sentiment.
+
+### Low-Tier Heterogeneity
+
+`r/explainlikeimfive` explicitly requires simplified explanations, while `r/Futurology` contains broader speculative discussion.
+
+The low tier therefore captures both expected expertise and some community-specific communication norms.
+
+### Automated Linguistic Measures
+
+Readability formulas, hedge dictionaries, causal-connective matching, acronym detection, and VADER sentiment all have known limitations when applied to informal technical social-media text.
+
+Results should therefore be interpreted at the level of the measured constructs rather than as perfect representations of human linguistic judgment.
+
+## Ethical and Privacy Considerations
+
+The analysis uses publicly accessible Reddit posts.
+
+The released research dataset should contain only the information required for reproducibility and should avoid unnecessary personally identifying information.
+
+Usernames should not be included in the public dataset.
+
+The repository is intended for research reproducibility and methodological inspection rather than profiling individual Reddit users.
+
+## Citation
+
+If you use this dataset, analysis pipeline, or repository, please cite the associated paper:
+
+**Srivastava, A. (2026). Expertise-Tiered AI Discourse on Reddit: A Computational Linguistic Analysis of Community-Rewarded Register Variation.**
+
+A machine-readable citation is also provided in `CITATION.cff`.
+
+## Author
+
+**Anshima Srivastava**
+
+## Status
+
+This repository accompanies a manuscript prepared for journal submission.
+
+Canonical data, analysis scripts, results, and figures will be maintained here so that the repository remains consistent with the reported manuscript.
