@@ -246,47 +246,36 @@ def compute_acronym_metrics(text):
             np.nan
         )
 
+return {
+    "acronym_count":
+        acronym_count,
 
-    return {
-        "acronym_count":
-            acronym_count,
+    "acronym_density_per_100_words":
+        acronym_density,
 
-        "acronym_density_per_100_words":
-            round(
-                acronym_density,
-                4
-            ),
+    "word_count_without_acronyms":
+        len(
+            words_without_acronyms
+        ),
 
-        "word_count_without_acronyms":
-            len(
-                words_without_acronyms
-            ),
+    "avg_syllables_per_word_without_acronyms":
+        (
+            syllables_without_acronyms
+            if pd.notna(
+                syllables_without_acronyms
+            )
+            else np.nan
+        ),
 
-        "avg_syllables_per_word_without_acronyms":
-            (
-                round(
-                    syllables_without_acronyms,
-                    4
-                )
-                if pd.notna(
-                    syllables_without_acronyms
-                )
-                else np.nan
-            ),
-
-        "avg_syllables_per_word_acronyms_normalized":
-            (
-                round(
-                    syllables_normalized,
-                    4
-                )
-                if pd.notna(
-                    syllables_normalized
-                )
-                else np.nan
-            ),
-    }
-
+    "avg_syllables_per_word_acronyms_normalized":
+        (
+            syllables_normalized
+            if pd.notna(
+                syllables_normalized
+            )
+            else np.nan
+        ),
+}
 
 # ============================================================
 # Statistical helpers
