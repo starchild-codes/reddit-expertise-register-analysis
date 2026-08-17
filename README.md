@@ -6,9 +6,11 @@ This repository contains the analysis code, numerical outputs, figures, and meth
 
 **Expertise-Tiered AI Discourse on Reddit: A Computational Linguistic Analysis of Community-Rewarded Register Variation**
 
+---
+
 ## Overview
 
-This study examines how linguistic register differs across Reddit communities that expect different levels of background knowledge from their audiences.
+This study examines whether linguistic register varies systematically across Reddit communities that expect different levels of background knowledge from their audiences.
 
 The final sample contains **1,778 highly scored Reddit posts** from **nine subreddits**, grouped into three community-level expected-audience expertise tiers.
 
@@ -30,9 +32,9 @@ The final sample contains **1,778 highly scored Reddit posts** from **nine subre
 - r/MachineLearning
 - r/deeplearning
 
-The tier labels describe the **expected audience and communication norms of each subreddit**. They are not verified expertise labels for individual authors.
+The tier labels describe the **expected audience and communication norms of each subreddit**. They are not verified expertise labels for individual Reddit users.
 
-Two low-tier communities, r/explainlikeimfive and r/Futurology, cover broader subject matter rather than AI alone. The retained posts were not independently hand-validated for topical equivalence across subreddits. Topic mix and general-audience writing are therefore treated as important limitations and potential confounds.
+Two low-tier communities, r/explainlikeimfive and r/Futurology, cover broader subject matter rather than AI alone. The retained posts were not independently hand-validated for topical equivalence across subreddits. Topic composition and general-audience writing therefore remain important potential confounds.
 
 ---
 
@@ -40,98 +42,85 @@ Two low-tier communities, r/explainlikeimfive and r/Futurology, cover broader su
 
 **How do community-rewarded linguistic patterns differ across Reddit communities with different expected audience expertise levels, and which features distinguish those tiers most reliably?**
 
-The study examines:
+The study evaluates differences in:
 
-- readability;
-- lexical complexity;
-- sentence length;
-- lexical diversity;
-- hedging;
-- causal connectives;
-- sentiment;
-- post length;
-- acronym use.
+- readability
+- lexical complexity
+- sentence length
+- lexical diversity
+- hedging
+- causal connectives
+- sentiment
+- post length
+- acronym use
 
 A supplementary machine-learning analysis tests whether the computed linguistic features collectively contain non-random information about subreddit expertise tier.
 
 ---
 
-## Main Result
+## Main Finding
 
-The clearest tier difference occurs in **average syllables per word**, used as a proxy for lexical complexity and technical-register density.
+The clearest linguistic difference across expertise tiers is **average syllables per word**, used as a proxy for lexical complexity and technical-register density.
 
 Across the full dataset:
 
-- Low tier: **1.534 syllables/word**
-- Medium tier: **1.536 syllables/word**
-- High tier: **1.626 syllables/word**
-- Kruskal-Wallis: **H = 89.90, p < .001**
-- High-vs-low Cohen's d: **0.521**
+| Tier | Mean syllables/word |
+|---|---:|
+| Low | 1.534 |
+| Medium | 1.536 |
+| High | 1.626 |
 
-The association remains after controlling for post length:
+**Kruskal-Wallis H = 89.90, p < .001**
 
-- **partial r = .197, p < .001**
+**High-vs-low Cohen's d = 0.521**
 
-It also remains after controlling jointly for post length and acronym density:
+The relationship remains after controlling for post length:
 
-- **partial r = .168, p < .001**
+**partial r = .197, p < .001**
 
-### Acronym robustness
+It also remains after controlling jointly for word count and acronym density:
 
-Because technical communities use more acronyms, average syllables per word was recalculated after acronym transformation.
+**partial r = .168, p < .001**
 
-After detected acronyms were removed:
-
-- Low: **1.528**
-- Medium: **1.534**
-- High: **1.631**
-- **H = 99.10, p < .001**
-- High-vs-low **d = .558**
-
-After detected acronyms were normalized to the one-syllable placeholder `term`:
-
-- Low: **1.526**
-- Medium: **1.531**
-- High: **1.628**
-- **H = 99.88, p < .001**
-- High-vs-low **d = .558**
-
-The implementation retains full-precision post-level transformed values before statistical testing; values are rounded only for presentation.
-
-### Leave-one-subreddit-out robustness
-
-The central pattern remains after excluding each subreddit individually.
-
-Removing r/explainlikeimfive produces the largest reduction in the high-vs-low syllable effect, showing that its explicit simplification norm strengthens the overall contrast, while the broader tier pattern remains detectable without it.
+These results indicate that the higher lexical-complexity pattern is not explained solely by longer posts or greater acronym use.
 
 ---
 
-## Dataset
+## Acronym Robustness
 
-The final analysis sample contains:
+Technical AI communities use more abbreviations and acronyms, which could artificially increase syllable-based complexity measures.
 
-- **1,778 posts**
-- **598 low-tier posts**
-- **592 medium-tier posts**
-- **588 high-tier posts**
-- **9 subreddits**
-- approximately **192–200 posts per subreddit**
-- posts collected from approximately **April 2025 to April 2026**
+The analysis therefore recalculates average syllables per word under two additional conditions.
 
-The sampling strategy prioritized highly scored posts because the study investigates **community-rewarded discourse**, not representative average posting behavior.
+### Acronyms removed
 
-Posts shorter than 50 words after preprocessing were excluded.
+| Tier | Mean syllables/word |
+|---|---:|
+| Low | 1.528 |
+| Medium | 1.534 |
+| High | 1.631 |
 
-Post titles were retained during the historical collection workflow but are excluded from linguistic feature calculations.
+**H = 99.10, p < .001**
 
-### Data availability and privacy
+**High-vs-low d = 0.558**
 
-The historical working dataset contains Reddit post text and is intentionally excluded from version control.
+### Acronyms normalized
 
-The following local/generated text-bearing files are ignored by Git:
+Detected acronyms are replaced with the one-syllable placeholder `term`.
 
-```text
-data/reddit_posts_working.csv
-data/reddit_posts_deidentified.csv
-data/reddit_posts_features.csv
-data/reddit_posts_features_acronyms.csv
+| Tier | Mean syllables/word |
+|---|---:|
+| Low | 1.526 |
+| Medium | 1.531 |
+| High | 1.628 |
+
+**H = 99.88, p < .001**
+
+**High-vs-low d = 0.558**
+
+The final implementation retains full-precision post-level transformed values before statistical testing; rounding is used only for presentation.
+
+The acronym detector used in the final robustness analysis is:
+
+```python
+r"\b[A-Z]{2,}(?:-?[A-Z0-9]+)*\b"
