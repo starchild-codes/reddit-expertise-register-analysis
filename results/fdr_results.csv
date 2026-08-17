@@ -1,41 +1,81 @@
-family,feature,p_value,q_value
-kruskal_wallis,fk_grade,3.3598307253922855e-11,1.3346979488292574e-10
-kruskal_wallis,gunning_fog,1.0418965151406879e-09,2.4310918686616052e-09
-kruskal_wallis,smog,1.5104557040472928e-09,3.0209114080945857e-09
-kruskal_wallis,avg_sentence_length,0.19330388712650629,0.2081734169054683
-kruskal_wallis,avg_syllables_per_word,3.009547830304744e-20,4.2133669624266415e-19
-kruskal_wallis,type_token_ratio,9.790352305621825e-05,0.00015229436919856173
-kruskal_wallis,mattr,0.010501508193118125,0.014702111470365375
-kruskal_wallis,hedge_per_100,0.13532249691598244,0.15787624640197953
-kruskal_wallis,causal_per_100,0.04568237570734442,0.05814120544571109
-kruskal_wallis,sentiment_pos,0.36700342060332064,0.36700342060332064
-kruskal_wallis,sentiment_neg,7.340104234604886e-11,2.0552291856893679e-10
-kruskal_wallis,sentiment_neu,4.709875242989223e-06,8.24228167523114e-06
-kruskal_wallis,sentiment_compound,3.813422710940735e-11,1.3346979488292574e-10
-kruskal_wallis,word_count,2.51299102067431e-13,1.759093714472017e-12
-partial_correlation,fk_grade,0.8451520031178369,0.9317061666639648
-partial_correlation,gunning_fog,0.8166052412240831,0.9317061666639648
-partial_correlation,smog,0.009797882656601163,0.021228745755969187
-partial_correlation,avg_sentence_length,0.02386085127824944,0.044313009516748963
-partial_correlation,avg_syllables_per_word,5.4515808045198054e-17,7.087055045875747e-16
-partial_correlation,type_token_ratio,0.9317061666639648,0.9317061666639648
-partial_correlation,mattr,0.7558947083281226,0.9317061666639648
-partial_correlation,hedge_per_100,0.00018812741943758334,0.0004891312905377167
-partial_correlation,causal_per_100,0.142173138474624,0.23103135002126401
-partial_correlation,sentiment_pos,0.9095135910680074,0.9317061666639648
-partial_correlation,sentiment_neg,3.163329648241419e-10,2.0561642713569222e-09
-partial_correlation,sentiment_neu,2.4055397645403177e-05,7.818004234756031e-05
-partial_correlation,sentiment_compound,7.39164143080545e-07,3.203044620015695e-06
-partial_correlation,fk_grade,0.855934675129913,0.855934675129913
-partial_correlation,gunning_fog,0.8008926172661176,0.855934675129913
-partial_correlation,smog,0.02740090967579437,0.059368637630887795
-partial_correlation,avg_sentence_length,0.05372496315586623,0.09977493157518015
-partial_correlation,avg_syllables_per_word,9.170954149841736e-13,1.1922240394794257e-11
-partial_correlation,type_token_ratio,0.2522023111287727,0.40982875558425563
-partial_correlation,mattr,0.6204395255416641,0.8065713832041633
-partial_correlation,hedge_per_100,0.0019791628728020316,0.006432279336606603
-partial_correlation,causal_per_100,0.7162256954310108,0.84644854914574
-partial_correlation,sentiment_pos,0.4363105501222153,0.6302263501765333
-partial_correlation,sentiment_neg,1.4477912481209477e-07,9.410643112786159e-07
-partial_correlation,sentiment_neu,0.003226381648490803,0.008388592286076088
-partial_correlation,sentiment_compound,6.837038813238516e-06,2.9627168190700234e-05
+test_family,analysis_source,feature,comparison,covariates,kruskal_h,r_partial,tier_a,tier_b,p_value,p_bonferroni,raw_p_column,q_value,reject_fdr_0_05,n,fdr_q_within_covariate_model
+kruskal_wallis_omnibus,primary_statistics,fk_grade,three-tier omnibus,,48.233090859152014,,,,3.359830725392285e-11,,p_value,9.261169440856074e-11,True,,
+kruskal_wallis_omnibus,primary_statistics,gunning_fog,three-tier omnibus,,41.36444642446345,,,,1.0418965151406879e-09,,p_value,1.9680267508212994e-09,True,,
+kruskal_wallis_omnibus,primary_statistics,smog,three-tier omnibus,,40.62170888177891,,,,1.5104557040472926e-09,,p_value,2.5677746968803975e-09,True,,
+kruskal_wallis_omnibus,primary_statistics,avg_sentence_length,three-tier omnibus,,3.2869835673523298,,,,0.1933038871265062,,p_value,0.20538538007191284,False,,
+kruskal_wallis_omnibus,primary_statistics,avg_syllables_per_word,three-tier omnibus,,89.89982402978956,,,,3.009547830304743e-20,,p_value,1.279057827879516e-19,True,,
+kruskal_wallis_omnibus,primary_statistics,type_token_ratio,three-tier omnibus,,18.46305604560273,,,,9.790352305621824e-05,,p_value,0.00013869665766297584,True,,
+kruskal_wallis_omnibus,primary_statistics,mattr,three-tier omnibus,,9.112472789387414,,,,0.0105015081931181,,p_value,0.013732741483308285,True,,
+kruskal_wallis_omnibus,primary_statistics,hedge_per_100,three-tier omnibus,,4.000188966607686,,,,0.1353224969159824,,p_value,0.15336549650478004,False,,
+kruskal_wallis_omnibus,primary_statistics,causal_per_100,three-tier omnibus,,6.172085414765737,,,,0.0456823757073444,,p_value,0.05547145621606106,False,,
+kruskal_wallis_omnibus,primary_statistics,sentiment_pos,three-tier omnibus,,2.004768221051972,,,,0.3670034206033206,,p_value,0.3670034206033206,False,,
+kruskal_wallis_omnibus,primary_statistics,sentiment_neg,three-tier omnibus,,46.67016595901812,,,,7.340104234604886e-11,,p_value,1.5597721498535383e-10,True,,
+kruskal_wallis_omnibus,primary_statistics,sentiment_neu,three-tier omnibus,,24.53169827594963,,,,4.709875242989223e-06,,p_value,7.278898102801526e-06,True,,
+kruskal_wallis_omnibus,primary_statistics,sentiment_compound,three-tier omnibus,,47.97981777548375,,,,3.813422710940736e-11,,p_value,9.261169440856074e-11,True,,
+kruskal_wallis_omnibus,primary_statistics,word_count,three-tier omnibus,,58.02426504703484,,,,2.51299102067431e-13,,p_value,8.544169470292653e-13,True,,
+kruskal_wallis_omnibus,acronym_robustness,acronym_density_per_100_words,three-tier omnibus,,135.76864536421112,,,,3.2977160002702585e-30,,p_value,5.606117200459439e-29,True,,
+kruskal_wallis_omnibus,acronym_robustness,avg_syllables_per_word_without_acronyms,three-tier omnibus,,99.09916464905422,,,,3.026145572183974e-22,,p_value,1.7148158242375852e-21,True,,
+kruskal_wallis_omnibus,acronym_robustness,avg_syllables_per_word_acronyms_normalized,three-tier omnibus,,99.88289848916943,,,,2.0450511497492415e-22,,p_value,1.7148158242375852e-21,True,,
+dunn_metric_by_tier_pair,primary_posthoc,fk_grade,low vs medium,,,,low,medium,,0.3303484910004698,p_bonferroni,0.510538577000726,False,,
+dunn_metric_by_tier_pair,primary_posthoc,fk_grade,low vs high,,,,low,high,,1.175556469179437e-06,p_bonferroni,3.5266694075383108e-06,True,,
+dunn_metric_by_tier_pair,primary_posthoc,fk_grade,medium vs high,,,,medium,high,,8.725430022103707e-11,p_bonferroni,4.0454266466117184e-10,True,,
+dunn_metric_by_tier_pair,primary_posthoc,gunning_fog,low vs medium,,,,low,medium,,0.3608621475666463,p_bonferroni,0.5412932213499695,False,,
+dunn_metric_by_tier_pair,primary_posthoc,gunning_fog,low vs high,,,,low,high,,1.0179835041524295e-05,p_bonferroni,2.5766458624573347e-05,True,,
+dunn_metric_by_tier_pair,primary_posthoc,gunning_fog,medium vs high,,,,medium,high,,1.912535905690854e-09,p_bonferroni,8.12827759918613e-09,True,,
+dunn_metric_by_tier_pair,primary_posthoc,smog,low vs medium,,,,low,medium,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,smog,low vs high,,,,low,high,,1.8022743688396187e-06,p_bonferroni,5.106444045045586e-06,True,,
+dunn_metric_by_tier_pair,primary_posthoc,smog,medium vs high,,,,medium,high,,8.750364701258217e-09,p_bonferroni,3.1876328554583505e-08,True,,
+dunn_metric_by_tier_pair,primary_posthoc,avg_sentence_length,low vs medium,,,,low,medium,,0.2657624846772846,p_bonferroni,0.42355895995442233,False,,
+dunn_metric_by_tier_pair,primary_posthoc,avg_sentence_length,low vs high,,,,low,high,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,avg_sentence_length,medium vs high,,,,medium,high,,0.4928266231235394,p_bonferroni,0.6793015616027165,False,,
+dunn_metric_by_tier_pair,primary_posthoc,avg_syllables_per_word,low vs medium,,,,low,medium,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,avg_syllables_per_word,low vs high,,,,low,high,,1.721485840667056e-16,p_bonferroni,2.1948944468504965e-15,True,,
+dunn_metric_by_tier_pair,primary_posthoc,avg_syllables_per_word,medium vs high,,,,medium,high,,2.3019698786856203e-15,p_bonferroni,1.6771494830423803e-14,True,,
+dunn_metric_by_tier_pair,primary_posthoc,type_token_ratio,low vs medium,,,,low,medium,,0.0003307880523397,p_bonferroni,0.0007334865508402044,True,,
+dunn_metric_by_tier_pair,primary_posthoc,type_token_ratio,low vs high,,,,low,high,,0.0011703503668567,p_bonferroni,0.002387514748387668,True,,
+dunn_metric_by_tier_pair,primary_posthoc,type_token_ratio,medium vs high,,,,medium,high,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,mattr,low vs medium,,,,low,medium,,0.0244444836508788,p_bonferroni,0.04617291356277107,True,,
+dunn_metric_by_tier_pair,primary_posthoc,mattr,low vs high,,,,low,high,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,mattr,medium vs high,,,,medium,high,,0.0294518326415693,p_bonferroni,0.05364440945428693,False,,
+dunn_metric_by_tier_pair,primary_posthoc,hedge_per_100,low vs medium,,,,low,medium,,0.8212991528695104,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,hedge_per_100,low vs high,,,,low,high,,0.1376284331749745,p_bonferroni,0.22642097070721615,False,,
+dunn_metric_by_tier_pair,primary_posthoc,hedge_per_100,medium vs high,,,,medium,high,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,causal_per_100,low vs medium,,,,low,medium,,0.3723570155871846,p_bonferroni,0.5425773655698976,False,,
+dunn_metric_by_tier_pair,primary_posthoc,causal_per_100,low vs high,,,,low,high,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,causal_per_100,medium vs high,,,,medium,high,,0.0418102854801686,p_bonferroni,0.07352843308581375,False,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_pos,low vs medium,,,,low,medium,,0.478314923127934,p_bonferroni,0.6776128077645731,False,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_pos,low vs high,,,,low,high,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_pos,medium vs high,,,,medium,high,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_neg,low vs medium,,,,low,medium,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_neg,low vs high,,,,low,high,,3.207002357898262e-08,p_bonferroni,1.0903808016854091e-07,True,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_neg,medium vs high,,,,medium,high,,3.0690832418074983e-09,p_bonferroni,1.204024964093711e-08,True,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_neu,low vs medium,,,,low,medium,,0.9106422439871784,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_neu,low vs high,,,,low,high,,0.0006616475736704,p_bonferroni,0.0014060010940496002,True,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_neu,medium vs high,,,,medium,high,,7.449026524867703e-06,p_bonferroni,1.9994755408855415e-05,True,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_compound,low vs medium,,,,low,medium,,0.0139653547867202,p_bonferroni,0.027393580543181934,True,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_compound,low vs high,,,,low,high,,1.6395297698799608e-11,p_bonferroni,8.3616018263878e-11,True,,
+dunn_metric_by_tier_pair,primary_posthoc,sentiment_compound,medium vs high,,,,medium,high,,0.0001487356892458,p_bonferroni,0.0003447963705243545,True,,
+dunn_metric_by_tier_pair,primary_posthoc,word_count,low vs medium,,,,low,medium,,9.316411537869334e-07,p_bonferroni,2.9696061776958505e-06,True,,
+dunn_metric_by_tier_pair,primary_posthoc,word_count,low vs high,,,,low,high,,3.0442486710022983e-13,p_bonferroni,1.940708527763965e-12,True,,
+dunn_metric_by_tier_pair,primary_posthoc,word_count,medium vs high,,,,medium,high,,0.0602276292727113,p_bonferroni,0.10238696976360921,False,,
+dunn_metric_by_tier_pair,acronym_robustness,acronym_density_per_100_words,low vs medium,,,,low,medium,,1.060971825717726e-05,p_bonferroni,2.5766458624573347e-05,True,,
+dunn_metric_by_tier_pair,acronym_robustness,acronym_density_per_100_words,low vs high,,,,low,high,,1.543196436311682e-30,p_bonferroni,7.870301825189579e-29,True,,
+dunn_metric_by_tier_pair,acronym_robustness,acronym_density_per_100_words,medium vs high,,,,medium,high,,1.2221214386368756e-11,p_bonferroni,6.925354818942294e-11,True,,
+dunn_metric_by_tier_pair,acronym_robustness,avg_syllables_per_word_without_acronyms,low vs medium,,,,low,medium,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,acronym_robustness,avg_syllables_per_word_without_acronyms,low vs high,,,,low,high,,1.4207040127484905e-18,p_bonferroni,2.4151968216724338e-17,True,,
+dunn_metric_by_tier_pair,acronym_robustness,avg_syllables_per_word_without_acronyms,medium vs high,,,,medium,high,,2.910376607648629e-16,p_bonferroni,2.4738201165013344e-15,True,,
+dunn_metric_by_tier_pair,acronym_robustness,avg_syllables_per_word_acronyms_normalized,low vs medium,,,,low,medium,,1.0,p_bonferroni,1.0,False,,
+dunn_metric_by_tier_pair,acronym_robustness,avg_syllables_per_word_acronyms_normalized,low vs high,,,,low,high,,9.838301657053988e-19,p_bonferroni,2.4151968216724338e-17,True,,
+dunn_metric_by_tier_pair,acronym_robustness,avg_syllables_per_word_acronyms_normalized,medium vs high,,,,medium,high,,2.335869736450775e-16,p_bonferroni,2.382587131179791e-15,True,,
+partial_correlation_word_count,partial_correlations,fk_grade,expertise tier | word_count,word_count,,-0.0046363819832675,,,0.8451520031180172,,p_value,0.8451520031180172,False,1778.0,0.8451520031180172
+partial_correlation_word_count,partial_correlations,gunning_fog,expertise tier | word_count,word_count,,-0.0055053461018834,,,0.8166052412242591,,p_value,0.8451520031180172,False,1778.0,0.8451520031180172
+partial_correlation_word_count,partial_correlations,smog,expertise tier | word_count,word_count,,0.0612573886555594,,,0.0097978826568403,,p_value,0.015396672746463329,True,1778.0,0.0153966727464634
+partial_correlation_word_count,partial_correlations,avg_syllables_per_word,expertise tier | word_count,word_count,,0.1969003117551896,,,5.4515808048724447e-17,,p_value,1.9989129617865633e-16,True,1778.0,1.9989129617865635e-16
+partial_correlation_word_count,partial_correlations,mattr,expertise tier | word_count,word_count,,-0.0073797832384486,,,0.7558947083284784,,p_value,0.8451520031180172,False,1778.0,0.8451520031180172
+partial_correlation_word_count,partial_correlations,hedge_per_100,expertise tier | word_count,word_count,,-0.0884780650182723,,,0.0001881274194517,,p_value,0.00034490026899478335,True,1778.0,0.0003449002689948
+partial_correlation_word_count,partial_correlations,causal_per_100,expertise tier | word_count,word_count,,-0.0348322229789814,,,0.1421731384711675,,p_value,0.1954880653978553,False,1778.0,0.1954880653978553
+partial_correlation_word_count,partial_correlations,sentiment_compound,expertise tier | word_count,word_count,,0.1171217768732987,,,7.391641427802514e-07,,p_value,1.6261611141165532e-06,True,1778.0,1.6261611141165532e-06
+partial_correlation_word_count,partial_correlations,sentiment_neg,expertise tier | word_count,word_count,,-0.1485026365673296,,,3.1633296458446324e-10,,p_value,8.699156526072739e-10,True,1778.0,8.699156526072738e-10
+partial_correlation_word_count,partial_correlations,avg_syllables_per_word_without_acronyms,expertise tier | word_count,word_count,,0.2101129055252752,,,3.520633640617885e-19,,p_value,1.9363485023398366e-18,True,1778.0,1.936348502339837e-18
+partial_correlation_word_count,partial_correlations,avg_syllables_per_word_acronyms_normalized,expertise tier | word_count,word_count,,0.2109372375999094,,,2.540841960824535e-19,,p_value,1.9363485023398366e-18,True,1778.0,1.936348502339837e-18
+partial_correlation_word_count_plus_acronym_density,partial_correlations,avg_syllables_per_word,expertise tier | word_count + acronym density,word_count + acronym_density_per_100_words,,0.1683887476766652,,,9.171267521949249e-13,,p_value,9.171267521949249e-13,True,1778.0,9.171267521949249e-13

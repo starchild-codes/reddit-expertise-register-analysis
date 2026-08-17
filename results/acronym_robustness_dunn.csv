@@ -1,0 +1,13 @@
+metric,tier_a,tier_b,p_bonferroni
+acronym_density_per_100_words,low,medium,1.060971825717726e-05
+acronym_density_per_100_words,low,high,1.5431964363116819e-30
+acronym_density_per_100_words,medium,high,1.2221214386368756e-11
+avg_syllables_per_word,low,medium,1.0
+avg_syllables_per_word,low,high,1.721485840667056e-16
+avg_syllables_per_word,medium,high,2.3019698786856203e-15
+avg_syllables_per_word_without_acronyms,low,medium,1.0
+avg_syllables_per_word_without_acronyms,low,high,1.4207040127484903e-18
+avg_syllables_per_word_without_acronyms,medium,high,2.9103766076486294e-16
+avg_syllables_per_word_acronyms_normalized,low,medium,1.0
+avg_syllables_per_word_acronyms_normalized,low,high,9.838301657053988e-19
+avg_syllables_per_word_acronyms_normalized,medium,high,2.335869736450775e-16

@@ -1,5 +1,5 @@
-task,model,accuracy,macro_f1
-three_class,logistic_regression,0.45786516853932585,0.4519396355477297
-three_class,random_forest,0.4044943820224719,0.40486608342599445
-binary_high_vs_low,logistic_regression,0.6470588235294118,0.6440170940170941
-three_class,shuffled_label_lr_100_runs,0.33617977528089893,
+task,model,n_total,n_train,n_test,accuracy,macro_f1,random_state
+three_class_expertise_tier,logistic_regression,1778,1422.0,356.0,0.45786516853932585,0.44858437536690193,42
+three_class_expertise_tier,random_forest,1778,1422.0,356.0,0.4044943820224719,0.40486608342599445,42
+three_class_expertise_tier,shuffled_label_logistic_regression,1778,,,0.33516853932584284,,runs_0_to_99
+binary_high_vs_low,logistic_regression,1186,948.0,238.0,0.6470588235294118,0.6440170940170941,42

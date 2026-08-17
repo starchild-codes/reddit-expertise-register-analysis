@@ -33,9 +33,9 @@ sentiment_neg,low,medium,1.0
 sentiment_neg,low,high,3.207002357898262e-08
 sentiment_neg,medium,high,3.0690832418074983e-09
 sentiment_neu,low,medium,0.9106422439871783
-sentiment_neu,low,high,0.0006616475736704852
+sentiment_neu,low,high,0.0006616475736704853
 sentiment_neu,medium,high,7.449026524867703e-06
-sentiment_compound,low,medium,0.013965354786720226
+sentiment_compound,low,medium,0.013965354786720225
 sentiment_compound,low,high,1.639529769879961e-11
 sentiment_compound,medium,high,0.0001487356892458531
 word_count,low,medium,9.316411537869334e-07

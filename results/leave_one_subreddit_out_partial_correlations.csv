@@ -1,0 +1,61 @@
+dropped_subreddit,metric,covariates,n,r_partial,p_value
+FULL_DATASET,avg_syllables_per_word,word_count,1778,0.1969003117553652,5.4515808045197326e-17
+FULL_DATASET,avg_syllables_per_word,word_count + acronym_density_per_100_words,1778,0.1683887476770512,9.17126752084071e-13
+FULL_DATASET,avg_syllables_per_word_without_acronyms,word_count,1778,0.2101129055259484,3.520633639682088e-19
+FULL_DATASET,avg_syllables_per_word_acronyms_normalized,word_count,1778,0.21093723760091476,2.540841959811711e-19
+FULL_DATASET,sentiment_compound,word_count,1778,0.1171217768714414,7.391641430805493e-07
+FULL_DATASET,sentiment_neg,word_count,1778,-0.148502636564584,3.163329648241519e-10
+ChatGPT,avg_syllables_per_word,word_count,1578,0.2070509216428676,9.903417290683714e-17
+ChatGPT,avg_syllables_per_word,word_count + acronym_density_per_100_words,1578,0.18233988916716612,3.004963702738742e-13
+ChatGPT,avg_syllables_per_word_without_acronyms,word_count,1578,0.22133675969374403,5.939552130571572e-19
+ChatGPT,avg_syllables_per_word_acronyms_normalized,word_count,1578,0.2219705391328152,4.693397708133614e-19
+ChatGPT,sentiment_compound,word_count,1578,0.13150381319115326,1.598456935012183e-07
+ChatGPT,sentiment_neg,word_count,1578,-0.16864198171415898,1.583462977955431e-11
+Futurology,avg_syllables_per_word,word_count,1578,0.26339869999445803,1.939378370088908e-26
+Futurology,avg_syllables_per_word,word_count + acronym_density_per_100_words,1578,0.23243673603869716,8.89189331039493e-21
+Futurology,avg_syllables_per_word_without_acronyms,word_count,1578,0.277133416076118,3.3623740430848604e-29
+Futurology,avg_syllables_per_word_acronyms_normalized,word_count,1578,0.27765070566668676,2.627341818515361e-29
+Futurology,sentiment_compound,word_count,1578,0.08400088957844223,0.0008406375459750389
+Futurology,sentiment_neg,word_count,1578,-0.1227069282662195,1.021309933666824e-06
+GenerativeAI,avg_syllables_per_word,word_count,1580,0.2401356767767187,3.79279086962934e-22
+GenerativeAI,avg_syllables_per_word,word_count + acronym_density_per_100_words,1580,0.21320246358380798,1.117291510074234e-17
+GenerativeAI,avg_syllables_per_word_without_acronyms,word_count,1580,0.2463371925232633,2.9514348646791944e-23
+GenerativeAI,avg_syllables_per_word_acronyms_normalized,word_count,1580,0.24654529433316463,2.7056930857709905e-23
+GenerativeAI,sentiment_compound,word_count,1580,0.18954520384353438,3.080968231446199e-14
+GenerativeAI,sentiment_neg,word_count,1580,-0.20157182917425817,6.136133944938852e-16
+LocalLLaMA,avg_syllables_per_word,word_count,1581,0.21947796184022253,1.0947275407266619e-18
+LocalLLaMA,avg_syllables_per_word,word_count + acronym_density_per_100_words,1581,0.1916986428986944,1.5566778345385392e-14
+LocalLLaMA,avg_syllables_per_word_without_acronyms,word_count,1581,0.228233850635879,4.060394184208681e-20
+LocalLLaMA,avg_syllables_per_word_acronyms_normalized,word_count,1581,0.22999934906825498,2.0545910368475007e-20
+LocalLLaMA,sentiment_compound,word_count,1581,0.082978420089258,0.0009619977008195985
+LocalLLaMA,sentiment_neg,word_count,1581,-0.10899717442844511,1.4114969308869829e-05
+MachineLearning,avg_syllables_per_word,word_count,1580,0.15531509999858886,5.48718688216935e-10
+MachineLearning,avg_syllables_per_word,word_count + acronym_density_per_100_words,1580,0.11799231956516018,2.603600807990092e-06
+MachineLearning,avg_syllables_per_word_without_acronyms,word_count,1580,0.1720246175197505,5.917318939133127e-12
+MachineLearning,avg_syllables_per_word_acronyms_normalized,word_count,1580,0.17221267687967978,5.608200029256446e-12
+MachineLearning,sentiment_compound,word_count,1580,0.13379462811335915,9.483816191141107e-08
+MachineLearning,sentiment_neg,word_count,1580,-0.15229364174145496,1.1842991618547963e-09
+OpenAI,avg_syllables_per_word,word_count,1586,0.2051914386527732,1.5761538554410362e-16
+OpenAI,avg_syllables_per_word,word_count + acronym_density_per_100_words,1586,0.17699030185015316,1.2968443756294041e-12
+OpenAI,avg_syllables_per_word_without_acronyms,word_count,1586,0.21876105197306214,1.2585271639816615e-18
+OpenAI,avg_syllables_per_word_acronyms_normalized,word_count,1586,0.21955308188217754,9.3967504827255e-19
+OpenAI,sentiment_compound,word_count,1586,0.12629289350932923,4.5536920813343757e-07
+OpenAI,sentiment_neg,word_count,1586,-0.1572547196296733,3.076017930310095e-10
+deeplearning,avg_syllables_per_word,word_count,1585,0.15248065000994562,1.0635945706528384e-09
+deeplearning,avg_syllables_per_word,word_count + acronym_density_per_100_words,1585,0.1257247254648393,5.216512450964505e-07
+deeplearning,avg_syllables_per_word_without_acronyms,word_count,1585,0.16775876599134232,1.828324217914135e-11
+deeplearning,avg_syllables_per_word_acronyms_normalized,word_count,1585,0.16866620042283972,1.4186592986476382e-11
+deeplearning,sentiment_compound,word_count,1585,0.09107568757672858,0.0002840255535219546
+deeplearning,sentiment_neg,word_count,1585,-0.123060144685099,8.990037474877993e-07
+explainlikeimfive,avg_syllables_per_word,word_count,1578,0.1076333807666161,1.8411032874409023e-05
+explainlikeimfive,avg_syllables_per_word,word_count + acronym_density_per_100_words,1578,0.0889023475332989,0.0004100641759894763
+explainlikeimfive,avg_syllables_per_word_without_acronyms,word_count,1578,0.12311943955648105,9.388346982852258e-07
+explainlikeimfive,avg_syllables_per_word_acronyms_normalized,word_count,1578,0.12507388883206602,6.276640927748419e-07
+explainlikeimfive,sentiment_compound,word_count,1578,0.08380069091611131,0.0008651301414117876
+explainlikeimfive,sentiment_neg,word_count,1578,-0.13853234336480116,3.3210075326459255e-08
+learnmachinelearning,avg_syllables_per_word,word_count,1578,0.20364022750520802,3.1838361099458015e-16
+learnmachinelearning,avg_syllables_per_word,word_count + acronym_density_per_100_words,1578,0.17381009182142296,3.717296963402433e-12
+learnmachinelearning,avg_syllables_per_word_without_acronyms,word_count,1578,0.2176224159294561,2.3268473106197384e-18
+learnmachinelearning,avg_syllables_per_word_acronyms_normalized,word_count,1578,0.21812566652222246,1.9366608473186643e-18
+learnmachinelearning,sentiment_compound,word_count,1578,0.12158130645585398,1.2833432611125177e-06
+learnmachinelearning,sentiment_neg,word_count,1578,-0.153541176441133,8.849715697298409e-10

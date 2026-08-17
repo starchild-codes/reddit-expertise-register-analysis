@@ -1,0 +1,5 @@
+feature,covariates,n,r_partial,p_value
+avg_syllables_per_word,word_count,1778,0.1969003117551896,5.4515808048725636e-17
+avg_syllables_per_word,word_count + acronym_density_per_100_words,1778,0.16838874767666517,9.171267521949348e-13
+avg_syllables_per_word_without_acronyms,word_count,1778,0.2101129055252752,3.520633640617885e-19
+avg_syllables_per_word_acronyms_normalized,word_count,1778,0.21093723760228192,2.5408419584344136e-19
