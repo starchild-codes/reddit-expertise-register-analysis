@@ -9,3 +9,5 @@ nltk
 textstat
 scikit-posthocs
 vaderSentiment
+lexicalrichness
+pingouin
