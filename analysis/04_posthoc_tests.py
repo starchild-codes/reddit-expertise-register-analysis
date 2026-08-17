@@ -5,10 +5,26 @@ import scikit_posthocs as sp
 
 
 ROOT = Path(__file__).resolve().parents[1]
-INPUT_PATH = ROOT / "data" / "reddit_posts_features.csv"
-OUTPUT_PATH = ROOT / "results" / "posthoc_dunn_bonferroni.csv"
 
-TIER_ORDER = ["low", "medium", "high"]
+INPUT_PATH = (
+    ROOT
+    / "data"
+    / "reddit_posts_features.csv"
+)
+
+OUTPUT_PATH = (
+    ROOT
+    / "results"
+    / "posthoc_dunn_bonferroni.csv"
+)
+
+
+TIER_ORDER = [
+    "low",
+    "medium",
+    "high",
+]
+
 
 FEATURES = [
     "fk_grade",
@@ -28,81 +44,199 @@ FEATURES = [
 ]
 
 
+PAIRS = [
+    (
+        "low",
+        "medium"
+    ),
+    (
+        "low",
+        "high"
+    ),
+    (
+        "medium",
+        "high"
+    ),
+]
+
+
 def main():
+
     if not INPUT_PATH.exists():
+
         raise FileNotFoundError(
-            f"Feature dataset not found: {INPUT_PATH}\n"
+            f"Feature dataset not found: "
+            f"{INPUT_PATH}\n"
             "Run analysis/02_linguistic_features.py first."
         )
 
-    df = pd.read_csv(INPUT_PATH)
 
-    required = {"expertise_tier"} | set(FEATURES)
-    missing = required - set(df.columns)
+    df = pd.read_csv(
+        INPUT_PATH
+    )
+
+
+    required = {
+        "expertise_tier"
+    } | set(
+        FEATURES
+    )
+
+
+    missing = (
+        required
+        - set(
+            df.columns
+        )
+    )
+
 
     if missing:
+
         raise ValueError(
-            f"Dataset is missing required columns: {sorted(missing)}"
+            "Dataset is missing required columns: "
+            f"{sorted(missing)}"
         )
 
-    all_rows = []
 
-    print(f"Loaded {len(df):,} posts")
-    print("\nDunn post-hoc tests with Bonferroni correction\n")
+    df["expertise_tier"] = (
+        df["expertise_tier"]
+        .astype(str)
+        .str.lower()
+        .str.strip()
+    )
+
+
+    print(
+        f"Loaded {len(df):,} posts"
+    )
+
+    print(
+        "\nDunn post-hoc tests "
+        "with Bonferroni correction\n"
+    )
+
+
+    rows = []
+
 
     for feature in FEATURES:
-        subset = df[
-            ["expertise_tier", feature]
-        ].dropna()
 
-        subset = subset[
-            subset["expertise_tier"].isin(TIER_ORDER)
-        ]
+        subset = (
+            df[
+                [
+                    "expertise_tier",
+                    feature
+                ]
+            ]
+            .dropna()
+            .copy()
+        )
 
-        if subset["expertise_tier"].nunique() < 2:
+
+        subset = (
+            subset[
+                subset[
+                    "expertise_tier"
+                ]
+                .isin(
+                    TIER_ORDER
+                )
+            ]
+        )
+
+
+        if (
+            subset[
+                "expertise_tier"
+            ]
+            .nunique()
+            < 2
+        ):
             continue
+
 
         matrix = sp.posthoc_dunn(
             subset,
             val_col=feature,
             group_col="expertise_tier",
-            p_adjust="bonferroni"
+            p_adjust="bonferroni",
         )
 
-        pairs = [
-            ("low", "medium"),
-            ("low", "high"),
-            ("medium", "high"),
-        ]
 
-        print(f"--- {feature} ---")
+        print(
+            f"--- {feature} ---"
+        )
 
-        for tier_a, tier_b in pairs:
-            p_adj = matrix.loc[tier_a, tier_b]
 
-            row = {
-                "feature": feature,
-                "tier_a": tier_a,
-                "tier_b": tier_b,
-                "p_bonferroni": p_adj,
-                "significant_0_05": p_adj < 0.05,
-            }
+        for (
+            tier_a,
+            tier_b
+        ) in PAIRS:
 
-            all_rows.append(row)
+            p_bonferroni = (
+                matrix.loc[
+                    tier_a,
+                    tier_b
+                ]
+            )
+
+
+            rows.append({
+                "feature":
+                    feature,
+
+                "tier_a":
+                    tier_a,
+
+                "tier_b":
+                    tier_b,
+
+                "p_bonferroni":
+                    p_bonferroni,
+            })
+
 
             print(
-                f"{tier_a:<7} vs {tier_b:<7} "
-                f"p_adj={p_adj:.6g}"
+                f"{tier_a:<7} vs "
+                f"{tier_b:<7} "
+                f"p={p_bonferroni:.6g}"
             )
+
 
         print()
 
-    results = pd.DataFrame(all_rows)
 
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    results.to_csv(OUTPUT_PATH, index=False)
+    results = pd.DataFrame(
+        rows,
+        columns=[
+            "feature",
+            "tier_a",
+            "tier_b",
+            "p_bonferroni",
+        ]
+    )
 
-    print(f"Saved results to {OUTPUT_PATH}")
+
+    OUTPUT_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+
+    results.to_csv(
+        OUTPUT_PATH,
+        index=False
+    )
+
+
+    print(
+        "Saved post-hoc results to:"
+    )
+
+    print(
+        OUTPUT_PATH
+    )
 
 
 if __name__ == "__main__":
