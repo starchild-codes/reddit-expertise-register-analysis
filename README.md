@@ -227,8 +227,7 @@ reddit-expertise-register-analysis/
 │   ├── classifier_results.csv
 │   ├── classifier_confusion_matrix.csv
 │   ├── classifier_shuffle_baseline.csv
-│   ├── random_forest_feature_importance.csv
-│   └── data_topicality_audit.csv
+│   ├── random_forest_feature_importance.csv  
 │
 ├── figures/
 │   ├── figure_01_word_count_by_tier.png
