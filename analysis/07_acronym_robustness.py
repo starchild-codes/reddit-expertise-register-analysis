@@ -8,6 +8,10 @@ import scikit_posthocs as sp
 from scipy import stats
 
 
+# ============================================================
+# Paths
+# ============================================================
+
 ROOT = Path(__file__).resolve().parents[1]
 
 INPUT_PATH = (
@@ -22,16 +26,10 @@ FEATURE_OUTPUT_PATH = (
     / "reddit_posts_features_acronyms.csv"
 )
 
-SUMMARY_OUTPUT_PATH = (
+CANONICAL_OUTPUT_PATH = (
     ROOT
     / "results"
-    / "acronym_robustness_summary.csv"
-)
-
-KW_OUTPUT_PATH = (
-    ROOT
-    / "results"
-    / "acronym_robustness_kruskal.csv"
+    / "acronym_robustness.csv"
 )
 
 DUNN_OUTPUT_PATH = (
@@ -47,6 +45,10 @@ PARTIAL_OUTPUT_PATH = (
 )
 
 
+# ============================================================
+# Configuration
+# ============================================================
+
 TIER_ORDER = [
     "low",
     "medium",
@@ -59,8 +61,6 @@ TIER_MAP = {
     "high": 2,
 }
 
-
-# Original regex used in the research analysis.
 ACRONYM_RE = re.compile(
     r"\b[A-Z]{2,}(?:[-]?[A-Z0-9]+)*\b"
 )
@@ -70,24 +70,24 @@ VOWELS = set(
 )
 
 
-def count_syllables_word(word: str) -> int:
+# ============================================================
+# Syllable-counting helpers
+# ============================================================
+
+def count_syllables_word(word):
     """
-    Rule-based syllable counter retained from the original
-    acronym robustness analysis.
+    Rule-based syllable counter used only for the
+    acronym-removal and acronym-normalization analyses.
 
-    Important:
-    This implementation is used only for the acronym-removal and
-    acronym-normalization sensitivity analyses.
-
-    The primary avg_syllables_per_word variable is computed by
-    textstat in analysis/02_linguistic_features.py.
+    The primary avg_syllables_per_word variable is taken
+    from analysis/02_linguistic_features.py.
     """
 
     word = (
         str(word)
         .lower()
         .strip(
-            ".,!?;:'\"()"
+            ".,!?;:'\"()[]{}"
         )
     )
 
@@ -98,6 +98,7 @@ def count_syllables_word(word: str) -> int:
     previous_was_vowel = False
 
     for character in word:
+
         is_vowel = (
             character in VOWELS
         )
@@ -108,16 +109,15 @@ def count_syllables_word(word: str) -> int:
         ):
             syllable_count += 1
 
-        previous_was_vowel = (
-            is_vowel
-        )
+        previous_was_vowel = is_vowel
 
-    # Original silent-e adjustment.
+
     if (
         word.endswith("e")
         and syllable_count > 1
     ):
         syllable_count -= 1
+
 
     return max(
         1,
@@ -125,9 +125,7 @@ def count_syllables_word(word: str) -> int:
     )
 
 
-def avg_syllables_per_word_custom(
-    text: str
-) -> float:
+def avg_syllables_per_word_custom(text):
 
     words = (
         str(text)
@@ -150,23 +148,23 @@ def avg_syllables_per_word_custom(
     )
 
 
-def compute_acronym_metrics(
-    text: str
-):
+# ============================================================
+# Acronym-feature computation
+# ============================================================
 
-    text = str(
-        text
-    )
+def compute_acronym_metrics(text):
+
+    text = str(text)
 
     acronyms = (
-        ACRONYM_RE.findall(
-            text
-        )
+        ACRONYM_RE
+        .findall(text)
     )
 
     acronym_count = len(
         acronyms
     )
+
 
     words = (
         text.split()
@@ -176,19 +174,23 @@ def compute_acronym_metrics(
         words
     )
 
-    acronym_density = (
-        (
+
+    if word_count > 0:
+
+        acronym_density = (
             acronym_count
             / word_count
+            * 100
         )
-        * 100
-        if word_count > 0
-        else 0.0
-    )
 
-    # ============================================================
-    # ACRONYMS REMOVED
-    # ============================================================
+    else:
+
+        acronym_density = 0.0
+
+
+    # --------------------------------------------------------
+    # Acronyms removed
+    # --------------------------------------------------------
 
     text_without_acronyms = (
         ACRONYM_RE.sub(
@@ -202,23 +204,26 @@ def compute_acronym_metrics(
         .split()
     )
 
+
     if words_without_acronyms:
+
         syllables_without_acronyms = (
             avg_syllables_per_word_custom(
                 text_without_acronyms
             )
         )
+
     else:
+
         syllables_without_acronyms = (
             np.nan
         )
 
-    # ============================================================
-    # ACRONYMS NORMALIZED
-    # ============================================================
 
-    # Original analysis replaced each detected acronym with
-    # the neutral one-syllable token "term".
+    # --------------------------------------------------------
+    # Acronyms normalized
+    # --------------------------------------------------------
+
     text_normalized = (
         ACRONYM_RE.sub(
             "term",
@@ -226,16 +231,21 @@ def compute_acronym_metrics(
         )
     )
 
+
     if text_normalized.split():
+
         syllables_normalized = (
             avg_syllables_per_word_custom(
                 text_normalized
             )
         )
+
     else:
+
         syllables_normalized = (
             np.nan
         )
+
 
     return {
         "acronym_count":
@@ -278,22 +288,35 @@ def compute_acronym_metrics(
     }
 
 
+# ============================================================
+# Statistical helpers
+# ============================================================
+
 def cohens_d_high_vs_low(
     df,
     metric
 ):
 
-    low = df.loc[
-        df["expertise_tier"]
-        == "low",
-        metric
-    ].dropna()
+    low = (
+        df.loc[
+            df["expertise_tier"]
+            == "low",
+            metric
+        ]
+        .dropna()
+        .astype(float)
+    )
 
-    high = df.loc[
-        df["expertise_tier"]
-        == "high",
-        metric
-    ].dropna()
+    high = (
+        df.loc[
+            df["expertise_tier"]
+            == "high",
+            metric
+        ]
+        .dropna()
+        .astype(float)
+    )
+
 
     if (
         len(low) < 2
@@ -301,21 +324,29 @@ def cohens_d_high_vs_low(
     ):
         return np.nan
 
+
     pooled_sd = np.sqrt(
         (
-            low.std(
+            low.var(
                 ddof=1
-            ) ** 2
+            )
             +
-            high.std(
+            high.var(
                 ddof=1
-            ) ** 2
+            )
         )
         / 2
     )
 
-    if pooled_sd == 0:
-        return 0.0
+
+    if (
+        pooled_sd == 0
+        or pd.isna(
+            pooled_sd
+        )
+    ):
+        return np.nan
+
 
     return (
         high.mean()
@@ -323,24 +354,18 @@ def cohens_d_high_vs_low(
     ) / pooled_sd
 
 
-def extract_p_value(
-    result
-):
+def extract_p_value(result):
+
     for column in result.columns:
 
         normalized = (
             column.lower()
-            .replace(
-                "-",
-                ""
-            )
-            .replace(
-                "_",
-                ""
-            )
+            .replace("-", "")
+            .replace("_", "")
         )
 
         if "pval" in normalized:
+
             return (
                 result[
                     column
@@ -349,24 +374,88 @@ def extract_p_value(
             )
 
     raise KeyError(
-        "Could not identify the p-value column. "
-        f"Returned columns: "
-        f"{result.columns.tolist()}"
+        "Could not identify p-value column "
+        "from Pingouin output."
     )
 
+
+def run_partial_correlation(
+    df,
+    feature,
+    covariates
+):
+
+    required = [
+        feature,
+        "tier_numeric",
+        *covariates,
+    ]
+
+
+    subset = (
+        df[
+            required
+        ]
+        .dropna()
+        .copy()
+    )
+
+
+    if len(subset) < 4:
+        return None
+
+
+    result = pg.partial_corr(
+        data=subset,
+        x=feature,
+        y="tier_numeric",
+        covar=covariates,
+        method="pearson",
+    )
+
+
+    return {
+        "feature":
+            feature,
+
+        "covariates":
+            " + ".join(
+                covariates
+            ),
+
+        "n":
+            len(subset),
+
+        "r_partial":
+            result["r"]
+            .iloc[0],
+
+        "p_value":
+            extract_p_value(
+                result
+            ),
+    }
+
+
+# ============================================================
+# Main
+# ============================================================
 
 def main():
 
     if not INPUT_PATH.exists():
+
         raise FileNotFoundError(
             f"Feature dataset not found: "
             f"{INPUT_PATH}\n"
             "Run analysis/02_linguistic_features.py first."
         )
 
+
     df = pd.read_csv(
         INPUT_PATH
     )
+
 
     required = {
         "clean_text",
@@ -375,6 +464,7 @@ def main():
         "avg_syllables_per_word",
     }
 
+
     missing = (
         required
         - set(
@@ -382,11 +472,52 @@ def main():
         )
     )
 
+
     if missing:
+
         raise ValueError(
             "Dataset is missing required columns: "
             f"{sorted(missing)}"
         )
+
+
+    df["expertise_tier"] = (
+        df["expertise_tier"]
+        .astype(str)
+        .str.lower()
+        .str.strip()
+    )
+
+
+    df["tier_numeric"] = (
+        df["expertise_tier"]
+        .map(
+            TIER_MAP
+        )
+    )
+
+
+    if (
+        df["tier_numeric"]
+        .isna()
+        .any()
+    ):
+
+        unexpected = sorted(
+            df.loc[
+                df[
+                    "tier_numeric"
+                ].isna(),
+                "expertise_tier"
+            ]
+            .unique()
+        )
+
+        raise ValueError(
+            "Unexpected expertise-tier labels: "
+            f"{unexpected}"
+        )
+
 
     print(
         f"Loaded {len(df):,} posts"
@@ -396,9 +527,10 @@ def main():
         "Computing acronym robustness features..."
     )
 
-    # ============================================================
-    # COMPUTE ACRONYM FEATURES
-    # ============================================================
+
+    # ========================================================
+    # Compute acronym-derived variables
+    # ========================================================
 
     acronym_features = (
         df["clean_text"]
@@ -411,20 +543,23 @@ def main():
         )
     )
 
-    # Safe reruns:
-    # remove any old acronym-derived columns before concatenating.
+
     duplicate_columns = [
         column
         for column
         in acronym_features.columns
-        if column in df.columns
+        if column
+        in df.columns
     ]
 
+
     if duplicate_columns:
+
         df = df.drop(
             columns=
                 duplicate_columns
         )
+
 
     df = pd.concat(
         [
@@ -434,140 +569,100 @@ def main():
         axis=1
     )
 
-    df["tier_numeric"] = (
-        df["expertise_tier"]
-        .map(
-            TIER_MAP
-        )
-    )
 
-    # ============================================================
-    # SAVE ACRONYM-ENRICHED DATASET
-    # ============================================================
+    # ========================================================
+    # Save acronym-enriched feature dataset
+    # ========================================================
 
     FEATURE_OUTPUT_PATH.parent.mkdir(
         parents=True,
         exist_ok=True
     )
 
+
     df.to_csv(
         FEATURE_OUTPUT_PATH,
         index=False
     )
 
+
     print(
-        "\nSaved acronym-enriched dataset to:"
+        "\nSaved acronym-enriched feature dataset:"
     )
+
     print(
         FEATURE_OUTPUT_PATH
     )
 
-    # ============================================================
-    # SUMMARY TABLE
-    # ============================================================
 
-    summary_metrics = [
+    # ========================================================
+    # Canonical robustness metrics
+    # ========================================================
+
+    robustness_metrics = [
         "acronym_density_per_100_words",
         "avg_syllables_per_word",
         "avg_syllables_per_word_without_acronyms",
         "avg_syllables_per_word_acronyms_normalized",
     ]
 
-    summary = (
-        df
-        .groupby(
-            "expertise_tier"
-        )[
-            summary_metrics
-        ]
-        .agg(
-            [
-                "mean",
-                "std",
-                "count"
-            ]
-        )
-    )
 
-    SUMMARY_OUTPUT_PATH.parent.mkdir(
-        parents=True,
-        exist_ok=True
-    )
+    canonical_rows = []
+    dunn_rows = []
 
-    summary.to_csv(
-        SUMMARY_OUTPUT_PATH
-    )
 
-    print(
-        "\nSummary by expertise tier:"
-    )
+    for metric in robustness_metrics:
 
-    print(
-        summary.round(
-            4
-        ).to_string()
-    )
+        tier_values = {}
 
-    print(
-        f"\nSaved summary to:\n"
-        f"{SUMMARY_OUTPUT_PATH}"
-    )
+        for tier in TIER_ORDER:
 
-    # ============================================================
-    # KRUSKAL-WALLIS TESTS
-    # ============================================================
-
-    kw_metrics = [
-        "acronym_density_per_100_words",
-        "avg_syllables_per_word_without_acronyms",
-        "avg_syllables_per_word_acronyms_normalized",
-    ]
-
-    kw_rows = []
-
-    print(
-        "\n"
-        + "=" * 70
-    )
-    print(
-        "Kruskal-Wallis acronym robustness tests"
-    )
-    print(
-        "=" * 70
-    )
-
-    for metric in kw_metrics:
-
-        groups = [
-            df.loc[
-                df[
-                    "expertise_tier"
+            tier_values[tier] = (
+                df.loc[
+                    df["expertise_tier"]
+                    == tier,
+                    metric
                 ]
-                == tier,
-                metric
-            ]
-            .dropna()
+                .dropna()
+                .astype(float)
+            )
 
-            for tier
-            in TIER_ORDER
-        ]
 
         h_stat, p_value = (
             stats.kruskal(
-                *groups
+                tier_values["low"],
+                tier_values["medium"],
+                tier_values["high"],
             )
         )
 
-        d_value = (
+
+        d_high_low = (
             cohens_d_high_vs_low(
                 df,
                 metric
             )
         )
 
-        kw_rows.append({
+
+        canonical_rows.append({
             "metric":
                 metric,
+
+            "low_mean":
+                tier_values[
+                    "low"
+                ].mean(),
+
+            "medium_mean":
+                tier_values[
+                    "medium"
+                ].mean(),
+
+            "high_mean":
+                tier_values[
+                    "high"
+                ].mean(),
 
             "kruskal_h":
                 h_stat,
@@ -576,65 +671,13 @@ def main():
                 p_value,
 
             "cohens_d_high_vs_low":
-                d_value,
+                d_high_low,
         })
 
-        print(
-            f"{metric:<52} "
-            f"H={h_stat:.3f}  "
-            f"p={p_value:.6g}  "
-            f"d={d_value:+.4f}"
-        )
 
-    kw_results = (
-        pd.DataFrame(
-            kw_rows
-        )
-    )
-
-    kw_results.to_csv(
-        KW_OUTPUT_PATH,
-        index=False
-    )
-
-    print(
-        f"\nSaved Kruskal-Wallis results to:\n"
-        f"{KW_OUTPUT_PATH}"
-    )
-
-    # ============================================================
-    # DUNN POST-HOC TESTS
-    # ============================================================
-
-    dunn_rows = []
-
-    print(
-        "\n"
-        + "=" * 70
-    )
-    print(
-        "Dunn post-hoc tests with Bonferroni correction"
-    )
-    print(
-        "=" * 70
-    )
-
-    pairs = [
-        (
-            "low",
-            "medium"
-        ),
-        (
-            "low",
-            "high"
-        ),
-        (
-            "medium",
-            "high"
-        ),
-    ]
-
-    for metric in kw_metrics:
+        # ----------------------------------------------------
+        # Dunn pairwise tests
+        # ----------------------------------------------------
 
         subset = (
             df[
@@ -644,34 +687,35 @@ def main():
                 ]
             ]
             .dropna()
+            .copy()
         )
 
-        matrix = (
-            sp.posthoc_dunn(
-                subset,
-                val_col=metric,
-                group_col=
-                    "expertise_tier",
-                p_adjust=
-                    "bonferroni",
-            )
+
+        matrix = sp.posthoc_dunn(
+            subset,
+            val_col=metric,
+            group_col="expertise_tier",
+            p_adjust="bonferroni",
         )
 
-        print(
-            f"\n--- {metric} ---"
-        )
 
-        for (
-            tier_a,
-            tier_b
-        ) in pairs:
+        pairs = [
+            (
+                "low",
+                "medium"
+            ),
+            (
+                "low",
+                "high"
+            ),
+            (
+                "medium",
+                "high"
+            ),
+        ]
 
-            p_adjusted = (
-                matrix.loc[
-                    tier_a,
-                    tier_b
-                ]
-            )
+
+        for tier_a, tier_b in pairs:
 
             dunn_rows.append({
                 "metric":
@@ -684,204 +728,216 @@ def main():
                     tier_b,
 
                 "p_bonferroni":
-                    p_adjusted,
-
-                "significant_0_05":
-                    (
-                        p_adjusted
-                        < 0.05
-                    ),
+                    matrix.loc[
+                        tier_a,
+                        tier_b
+                    ],
             })
 
-            print(
-                f"{tier_a:<7} "
-                f"vs "
-                f"{tier_b:<7} "
-                f"p_adj="
-                f"{p_adjusted:.6g}"
-            )
 
-    dunn_results = (
-        pd.DataFrame(
-            dunn_rows
+    canonical_df = pd.DataFrame(
+        canonical_rows
+    )
+
+
+    dunn_df = pd.DataFrame(
+        dunn_rows
+    )
+
+
+    # ========================================================
+    # Save canonical robustness summary
+    # ========================================================
+
+    CANONICAL_OUTPUT_PATH.parent.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+
+    canonical_df.to_csv(
+        CANONICAL_OUTPUT_PATH,
+        index=False
+    )
+
+
+    print(
+        "\nCanonical acronym robustness results:"
+    )
+
+    print(
+        canonical_df
+        .round(4)
+        .to_string(
+            index=False
         )
     )
 
-    dunn_results.to_csv(
+
+    print(
+        "\nSaved canonical robustness output:"
+    )
+
+    print(
+        CANONICAL_OUTPUT_PATH
+    )
+
+
+    # ========================================================
+    # Save Dunn robustness tests
+    # ========================================================
+
+    dunn_df.to_csv(
         DUNN_OUTPUT_PATH,
         index=False
     )
 
+
     print(
-        f"\nSaved Dunn results to:\n"
-        f"{DUNN_OUTPUT_PATH}"
+        "\nSaved acronym robustness Dunn tests:"
     )
 
-    # ============================================================
-    # PARTIAL CORRELATIONS
-    # ============================================================
+    print(
+        DUNN_OUTPUT_PATH
+    )
 
-    partial_specs = [
-        (
-            "avg_syllables_per_word",
-            [
-                "word_count"
-            ],
-        ),
-        (
-            "avg_syllables_per_word",
-            [
-                "word_count",
-                "acronym_density_per_100_words",
-            ],
-        ),
-        (
-            "avg_syllables_per_word_without_acronyms",
-            [
-                "word_count"
-            ],
-        ),
-        (
-            "avg_syllables_per_word_acronyms_normalized",
-            [
-                "word_count"
-            ],
-        ),
-    ]
+
+    # ========================================================
+    # Partial correlations
+    # ========================================================
 
     partial_rows = []
 
-    print(
-        "\n"
-        + "=" * 70
-    )
-    print(
-        "Partial-correlation robustness tests"
-    )
-    print(
-        "=" * 70
-    )
 
-    for (
-        metric,
-        covariates
-    ) in partial_specs:
-
-        required_columns = [
-            metric,
-            "tier_numeric",
-            *covariates,
-        ]
-
-        subset = (
-            df[
-                required_columns
-            ]
-            .dropna()
-        )
-
-        result = (
-            pg.partial_corr(
-                data=subset,
-                x=metric,
-                y="tier_numeric",
-                covar=covariates,
-                method="pearson",
-            )
-        )
-
-        r_value = (
-            result[
-                "r"
-            ]
-            .iloc[0]
-        )
-
-        p_value = (
-            extract_p_value(
-                result
-            )
-        )
-
-        partial_rows.append({
-            "metric":
-                metric,
-
-            "covariates":
-                " + ".join(
-                    covariates
-                ),
-
-            "n":
-                len(
-                    subset
-                ),
-
-            "r_partial":
-                r_value,
-
-            "p_value":
-                p_value,
-        })
-
-        print(
-            f"{metric:<48} "
-            f"| "
-            f"{' + '.join(covariates):<45} "
-            f"r={r_value:+.4f}  "
-            f"p={p_value:.6g}"
-        )
-
-    partial_results = (
-        pd.DataFrame(
-            partial_rows
-        )
+    # Main syllable metric controlling for word count
+    result = run_partial_correlation(
+        df=df,
+        feature=(
+            "avg_syllables_per_word"
+        ),
+        covariates=[
+            "word_count"
+        ],
     )
 
-    partial_results.to_csv(
+
+    if result is not None:
+
+        partial_rows.append(
+            result
+        )
+
+
+    # Main syllable metric controlling for
+    # word count + acronym density
+    result = run_partial_correlation(
+        df=df,
+        feature=(
+            "avg_syllables_per_word"
+        ),
+        covariates=[
+            "word_count",
+            "acronym_density_per_100_words",
+        ],
+    )
+
+
+    if result is not None:
+
+        partial_rows.append(
+            result
+        )
+
+
+    # Acronym-removed syllable metric
+    result = run_partial_correlation(
+        df=df,
+        feature=(
+            "avg_syllables_per_word_without_acronyms"
+        ),
+        covariates=[
+            "word_count"
+        ],
+    )
+
+
+    if result is not None:
+
+        partial_rows.append(
+            result
+        )
+
+
+    # Acronym-normalized syllable metric
+    result = run_partial_correlation(
+        df=df,
+        feature=(
+            "avg_syllables_per_word_acronyms_normalized"
+        ),
+        covariates=[
+            "word_count"
+        ],
+    )
+
+
+    if result is not None:
+
+        partial_rows.append(
+            result
+        )
+
+
+    partial_df = pd.DataFrame(
+        partial_rows
+    )
+
+
+    partial_df.to_csv(
         PARTIAL_OUTPUT_PATH,
         index=False
     )
 
-    print(
-        f"\nSaved partial correlations to:\n"
-        f"{PARTIAL_OUTPUT_PATH}"
-    )
-
-    # ============================================================
-    # FINAL SUMMARY
-    # ============================================================
 
     print(
-        "\n"
-        + "=" * 70
-    )
-    print(
-        "ACRONYM ROBUSTNESS ANALYSIS COMPLETE"
-    )
-    print(
-        "=" * 70
+        "\nSaved acronym robustness partial correlations:"
     )
 
-    print(
-        "\nGenerated files:"
-    )
-
-    print(
-        FEATURE_OUTPUT_PATH
-    )
-    print(
-        SUMMARY_OUTPUT_PATH
-    )
-    print(
-        KW_OUTPUT_PATH
-    )
-    print(
-        DUNN_OUTPUT_PATH
-    )
     print(
         PARTIAL_OUTPUT_PATH
     )
+
+
+    # ========================================================
+    # Key-result summary
+    # ========================================================
+
+    print(
+        "\nKey robustness results"
+    )
+
+
+    for metric in [
+        "avg_syllables_per_word",
+        "avg_syllables_per_word_without_acronyms",
+        "avg_syllables_per_word_acronyms_normalized",
+    ]:
+
+        row = (
+            canonical_df[
+                canonical_df[
+                    "metric"
+                ]
+                == metric
+            ]
+            .iloc[0]
+        )
+
+        print(
+            f"{metric:<50} "
+            f"H={row['kruskal_h']:.2f}  "
+            f"p={row['p_value']:.6g}  "
+            f"d={row['cohens_d_high_vs_low']:.3f}"
+        )
 
 
 if __name__ == "__main__":
