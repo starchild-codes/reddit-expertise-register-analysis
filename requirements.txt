@@ -6,7 +6,7 @@ statsmodels
 matplotlib
 seaborn
 nltk
-textstat
+textstat==0.7.13
 scikit-posthocs
 vaderSentiment
 lexicalrichness
