@@ -87,7 +87,7 @@ def count_syllables_word(word):
         str(word)
         .lower()
         .strip(
-            ".,!?;:'\"()[]{}"
+           ".,!?;:'\"()"
         )
     )
 
