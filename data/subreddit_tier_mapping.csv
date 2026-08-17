@@ -1,0 +1,10 @@
+subreddit,tier,tier_code,notes
+explainlikeimfive,low,0,"Beginner-facing community with explicit simplification norms"
+Futurology,low,0,"Broad public-facing discussion community; not exclusively AI-focused"
+GenerativeAI,low,0,"General AI discussion with relatively accessible audience expectations"
+ChatGPT,medium,1,"General-purpose AI discussion with mixed technical depth"
+learnmachinelearning,medium,1,"Learning-oriented machine-learning community"
+OpenAI,medium,1,"Mixed technical and public discussion around OpenAI systems"
+LocalLLaMA,high,2,"Technical practitioner community focused on local language models"
+MachineLearning,high,2,"Technical machine-learning research and practitioner community"
+deeplearning,high,2,"Technical deep-learning discussion community"
