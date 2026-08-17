@@ -1,0 +1,5 @@
+task,model,accuracy,macro_f1
+three_class,logistic_regression,0.45786516853932585,0.4519396355477297
+three_class,random_forest,0.4044943820224719,0.40486608342599445
+binary_high_vs_low,logistic_regression,0.6470588235294118,0.6440170940170941
+three_class,shuffled_label_lr_100_runs,0.33617977528089893,
