@@ -221,7 +221,6 @@ reddit-expertise-register-analysis/
 │   ├── acronym_robustness.csv
 │   ├── acronym_robustness_dunn.csv
 │   ├── acronym_robustness_partial_correlations.csv
-│   ├── leave_one_subreddit_out_primary_syllables.csv
 │   ├── leave_one_subreddit_out_all_metrics.csv
 │   ├── leave_one_subreddit_out_partial_correlations.csv
 │   ├── leave_one_subreddit_out_influential_subreddits.csv
