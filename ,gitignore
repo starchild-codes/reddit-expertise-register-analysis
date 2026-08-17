@@ -1,0 +1,24 @@
+# Private/local Reddit data
+data/reddit_posts_working.csv
+
+# Generated intermediate datasets
+data/reddit_posts_deidentified.csv
+data/reddit_posts_features.csv
+data/reddit_posts_features_acronyms.csv
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
