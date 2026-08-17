@@ -6,6 +6,7 @@ import pandas as pd
 import pingouin as pg
 import scikit_posthocs as sp
 from scipy import stats
+import textstat
 
 
 # ============================================================
@@ -61,85 +62,41 @@ TIER_MAP = {
     "high": 2,
 }
 
+
+# Original acronym regex used in the robustness analysis.
 ACRONYM_RE = re.compile(
     r"\b[A-Z]{2,}(?:[-]?[A-Z0-9]+)*\b"
 )
 
-VOWELS = set(
-    "aeiouyAEIOUY"
-)
-
 
 # ============================================================
-# Syllable-counting helpers
+# Historical syllable helper
 # ============================================================
 
-def count_syllables_word(word):
+def avg_syllables_per_word_historical(text):
     """
-    Rule-based syllable counter used only for the
-    acronym-removal and acronym-normalization analyses.
+    Reproduce the historical acronym-robustness calculation.
 
-    The primary avg_syllables_per_word variable is taken
-    from analysis/02_linguistic_features.py.
+    The original analysis:
+    1. transformed the text by removing or normalizing acronyms;
+    2. counted total syllables with textstat.syllable_count();
+    3. divided by the whitespace-based word count.
+
+    This differs slightly from textstat.avg_syllables_per_word(),
+    because the denominator here is len(text.split()).
     """
 
-    word = (
-        str(word)
-        .lower()
-        .strip(
-           ".,!?;:'\"()"
-        )
-    )
+    text = str(text)
 
-    if not word:
-        return 0
-
-    syllable_count = 0
-    previous_was_vowel = False
-
-    for character in word:
-
-        is_vowel = (
-            character in VOWELS
-        )
-
-        if (
-            is_vowel
-            and not previous_was_vowel
-        ):
-            syllable_count += 1
-
-        previous_was_vowel = is_vowel
-
-
-    if (
-        word.endswith("e")
-        and syllable_count > 1
-    ):
-        syllable_count -= 1
-
-
-    return max(
-        1,
-        syllable_count
-    )
-
-
-def avg_syllables_per_word_custom(text):
-
-    words = (
-        str(text)
-        .split()
-    )
+    words = text.split()
 
     if not words:
         return np.nan
 
-    total_syllables = sum(
-        count_syllables_word(
-            word
+    total_syllables = (
+        textstat.syllable_count(
+            text
         )
-        for word in words
     )
 
     return (
@@ -165,7 +122,6 @@ def compute_acronym_metrics(text):
         acronyms
     )
 
-
     words = (
         text.split()
     )
@@ -173,7 +129,6 @@ def compute_acronym_metrics(text):
     word_count = len(
         words
     )
-
 
     if word_count > 0:
 
@@ -204,11 +159,10 @@ def compute_acronym_metrics(text):
         .split()
     )
 
-
     if words_without_acronyms:
 
         syllables_without_acronyms = (
-            avg_syllables_per_word_custom(
+            avg_syllables_per_word_historical(
                 text_without_acronyms
             )
         )
@@ -224,6 +178,8 @@ def compute_acronym_metrics(text):
     # Acronyms normalized
     # --------------------------------------------------------
 
+    # Historical analysis replaced each detected acronym
+    # with the neutral one-syllable token "term".
     text_normalized = (
         ACRONYM_RE.sub(
             "term",
@@ -231,11 +187,10 @@ def compute_acronym_metrics(text):
         )
     )
 
-
     if text_normalized.split():
 
         syllables_normalized = (
-            avg_syllables_per_word_custom(
+            avg_syllables_per_word_historical(
                 text_normalized
             )
         )
@@ -246,36 +201,38 @@ def compute_acronym_metrics(text):
             np.nan
         )
 
-return {
-    "acronym_count":
-        acronym_count,
 
-    "acronym_density_per_100_words":
-        acronym_density,
+    return {
+        "acronym_count":
+            acronym_count,
 
-    "word_count_without_acronyms":
-        len(
-            words_without_acronyms
-        ),
+        "acronym_density_per_100_words":
+            acronym_density,
 
-    "avg_syllables_per_word_without_acronyms":
-        (
-            syllables_without_acronyms
-            if pd.notna(
+        "word_count_without_acronyms":
+            len(
+                words_without_acronyms
+            ),
+
+        "avg_syllables_per_word_without_acronyms":
+            (
                 syllables_without_acronyms
-            )
-            else np.nan
-        ),
+                if pd.notna(
+                    syllables_without_acronyms
+                )
+                else np.nan
+            ),
 
-    "avg_syllables_per_word_acronyms_normalized":
-        (
-            syllables_normalized
-            if pd.notna(
+        "avg_syllables_per_word_acronyms_normalized":
+            (
                 syllables_normalized
-            )
-            else np.nan
-        ),
-}
+                if pd.notna(
+                    syllables_normalized
+                )
+                else np.nan
+            ),
+    }
+
 
 # ============================================================
 # Statistical helpers
@@ -285,6 +242,13 @@ def cohens_d_high_vs_low(
     df,
     metric
 ):
+    """
+    Cohen's d using the historical study convention:
+
+    (mean_high - mean_low)
+    /
+    sqrt((variance_high + variance_low) / 2)
+    """
 
     low = (
         df.loc[
@@ -306,7 +270,6 @@ def cohens_d_high_vs_low(
         .astype(float)
     )
 
-
     if (
         len(low) < 2
         or len(high) < 2
@@ -327,7 +290,6 @@ def cohens_d_high_vs_low(
         / 2
     )
 
-
     if (
         pooled_sd == 0
         or pd.isna(
@@ -344,6 +306,10 @@ def cohens_d_high_vs_low(
 
 
 def extract_p_value(result):
+    """
+    Extract a p-value from Pingouin output while remaining
+    tolerant of minor column-name differences across versions.
+    """
 
     for column in result.columns:
 
@@ -373,13 +339,17 @@ def run_partial_correlation(
     feature,
     covariates
 ):
+    """
+    Run a Pearson partial correlation between the feature
+    and ordinal expertise tier while controlling for the
+    specified covariates.
+    """
 
     required = [
         feature,
         "tier_numeric",
         *covariates,
     ]
-
 
     subset = (
         df[
@@ -388,7 +358,6 @@ def run_partial_correlation(
         .dropna()
         .copy()
     )
-
 
     if len(subset) < 4:
         return None
@@ -533,12 +502,13 @@ def main():
     )
 
 
+    # Safe reruns:
+    # remove any pre-existing acronym-derived columns.
     duplicate_columns = [
         column
         for column
         in acronym_features.columns
-        if column
-        in df.columns
+        if column in df.columns
     ]
 
 
