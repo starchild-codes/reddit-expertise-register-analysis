@@ -296,6 +296,7 @@ reddit-expertise-register-analysis/
 │   ├── leave_one_subreddit_out_primary_syllables.csv
 │   ├── leave_one_subreddit_out_all_metrics.csv
 │   ├── classifier_results.csv
+│   ├── classifier_confusion_matrix.csv
 │   ├── classifier_shuffle_baseline.csv
 │   ├── random_forest_feature_importance.csv
 │   └── data_topicality_audit.csv
