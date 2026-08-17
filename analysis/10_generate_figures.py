@@ -1,53 +1,46 @@
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
+
+# ============================================================
+# Paths
+# ============================================================
 
 ROOT = Path(__file__).resolve().parents[1]
 
-DATA_PATH = (
-    ROOT
-    / "data"
-    / "reddit_posts_features.csv"
+DATA_DIR = ROOT / "data"
+RESULTS_DIR = ROOT / "results"
+FIGURES_DIR = ROOT / "figures"
+
+FEATURES_PATH = DATA_DIR / "reddit_posts_features.csv"
+ACRONYM_FEATURES_PATH = DATA_DIR / "reddit_posts_features_acronyms.csv"
+
+PRIMARY_RESULTS_PATH = RESULTS_DIR / "primary_statistics.csv"
+PARTIAL_RESULTS_PATH = RESULTS_DIR / "partial_correlations.csv"
+RF_IMPORTANCE_PATH = RESULTS_DIR / "random_forest_feature_importance.csv"
+
+LOSO_ALL_PATH = (
+    RESULTS_DIR
+    / "leave_one_subreddit_out_all_metrics.csv"
 )
 
-ACRONYM_DATA_PATH = (
-    ROOT
-    / "data"
-    / "reddit_posts_features_acronyms.csv"
+LOSO_PRIMARY_PATH = (
+    RESULTS_DIR
+    / "leave_one_subreddit_out_primary_syllables.csv"
 )
 
-PRIMARY_RESULTS_PATH = (
-    ROOT
-    / "results"
-    / "primary_statistics.csv"
+FIGURES_DIR.mkdir(
+    parents=True,
+    exist_ok=True,
 )
 
-PARTIAL_RESULTS_PATH = (
-    ROOT
-    / "results"
-    / "partial_correlations.csv"
-)
 
-IMPORTANCE_PATH = (
-    ROOT
-    / "results"
-    / "random_forest_feature_importance.csv"
-)
-
-LOSO_PATH = (
-    ROOT
-    / "results"
-    / "leave_one_subreddit_out.csv"
-)
-
-FIGURE_DIR = (
-    ROOT
-    / "figures"
-)
-
+# ============================================================
+# General configuration
+# ============================================================
 
 TIER_ORDER = [
     "low",
@@ -55,664 +48,304 @@ TIER_ORDER = [
     "high",
 ]
 
+SUBREDDIT_ORDER = [
+    "explainlikeimfive",
+    "Futurology",
+    "GenerativeAI",
+    "ChatGPT",
+    "learnmachinelearning",
+    "OpenAI",
+    "LocalLLaMA",
+    "MachineLearning",
+    "deeplearning",
+]
 
-def ensure_file(path):
-    if not path.exists():
-        raise FileNotFoundError(
-            f"Required file not found: {path}"
-        )
 
+def save_figure(filename):
+    """
+    Apply common layout settings and save the active figure.
+    """
+    plt.tight_layout()
 
-def save_figure(fig, filename):
-    FIGURE_DIR.mkdir(
-        parents=True,
-        exist_ok=True
-    )
+    output_path = FIGURES_DIR / filename
 
-    output_path = (
-        FIGURE_DIR
-        / filename
-    )
-
-    fig.tight_layout()
-
-    fig.savefig(
+    plt.savefig(
         output_path,
         dpi=300,
         bbox_inches="tight",
     )
 
-    plt.close(fig)
+    plt.close()
 
     print(
-        f"Saved {output_path}"
+        "Saved:",
+        output_path
     )
 
 
-def get_primary_row(
-    primary_results,
-    feature
-):
-    row = primary_results[
-        primary_results["feature"]
-        == feature
-    ]
-
-    if row.empty:
-        return None
-
-    return row.iloc[0]
-
-
-def figure_01_syllables_by_tier(
-    df,
-    primary_results
-):
-    feature = (
-        "avg_syllables_per_word"
+def tier_mean_sd(df, metric):
+    """
+    Return mean, SD, and count by expertise tier.
+    """
+    summary = (
+        df.groupby("expertise_tier")[metric]
+        .agg(["mean", "std", "count"])
+        .reindex(TIER_ORDER)
     )
 
-    means = (
-        df.groupby(
-            "expertise_tier"
-        )[feature]
-        .mean()
-        .reindex(
-            TIER_ORDER
-        )
+    return summary
+
+
+# ============================================================
+# Load feature dataset
+# ============================================================
+
+if ACRONYM_FEATURES_PATH.exists():
+    data_path = ACRONYM_FEATURES_PATH
+
+elif FEATURES_PATH.exists():
+    data_path = FEATURES_PATH
+
+else:
+    raise FileNotFoundError(
+        "Could not find either:\n"
+        f"{ACRONYM_FEATURES_PATH}\n"
+        "or\n"
+        f"{FEATURES_PATH}"
     )
 
-    sems = (
-        df.groupby(
-            "expertise_tier"
-        )[feature]
-        .sem()
-        .reindex(
-            TIER_ORDER
-        )
+
+df = pd.read_csv(data_path)
+
+df["expertise_tier"] = (
+    df["expertise_tier"]
+    .astype(str)
+    .str.lower()
+    .str.strip()
+)
+
+
+print(
+    "Using feature dataset:",
+    data_path
+)
+
+
+# ============================================================
+# Figure 1
+# Mean word count by expertise tier
+# ============================================================
+
+if "word_count" in df.columns:
+
+    summary = tier_mean_sd(
+        df,
+        "word_count",
     )
 
-    result = get_primary_row(
-        primary_results,
-        feature
+    x = np.arange(
+        len(TIER_ORDER)
     )
 
-    fig, ax = plt.subplots(
+    plt.figure(
         figsize=(7, 5)
     )
 
-    bars = ax.bar(
-        TIER_ORDER,
-        means.values,
-        yerr=sems.values,
+    plt.bar(
+        x,
+        summary["mean"],
+        yerr=summary["std"],
         capsize=5,
     )
 
-    for bar, value in zip(
-        bars,
-        means.values
-    ):
-        ax.text(
-            bar.get_x()
-            + bar.get_width() / 2,
-            bar.get_height()
-            + 0.005,
-            f"{value:.3f}",
-            ha="center",
-            va="bottom",
-            fontsize=9,
-        )
-
-    ax.set_xlabel(
-        "Expected-audience expertise tier"
+    plt.xticks(
+        x,
+        [
+            "Low",
+            "Medium",
+            "High",
+        ],
     )
 
-    ax.set_ylabel(
-        "Mean syllables per word"
+    plt.ylabel(
+        "Mean word count"
     )
 
-    if result is not None:
-        ax.set_title(
-            "Syllable-based lexical complexity by expertise tier\n"
-            f"H={result['kruskal_h']:.2f}, "
-            f"p={result['p_value']:.3g}, "
-            f"d={result['cohens_d_high_vs_low']:.3f}"
-        )
-    else:
-        ax.set_title(
-            "Syllable-based lexical complexity by expertise tier"
-        )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
+    plt.xlabel(
+        "Expertise tier"
     )
 
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
+    plt.title(
+        "Mean Word Count by Expertise Tier"
     )
 
     save_figure(
-        fig,
-        "figure_01_syllables_by_tier.png"
+        "figure_01_word_count_by_tier.png"
     )
 
 
-def figure_02_fk_boxplot(
-    df,
-    primary_results
-):
-    feature = "fk_grade"
+# ============================================================
+# Figure 2
+# Mean syllables per word by expertise tier
+# ============================================================
 
-    data = [
-        df.loc[
-            df[
-                "expertise_tier"
-            ]
-            == tier,
-            feature
-        ].dropna()
-        for tier
-        in TIER_ORDER
-    ]
+if "avg_syllables_per_word" in df.columns:
 
-    result = get_primary_row(
-        primary_results,
-        feature
+    summary = tier_mean_sd(
+        df,
+        "avg_syllables_per_word",
     )
 
-    fig, ax = plt.subplots(
+    x = np.arange(
+        len(TIER_ORDER)
+    )
+
+    plt.figure(
         figsize=(7, 5)
     )
 
-    ax.boxplot(
-        data,
-        labels=[
+    plt.bar(
+        x,
+        summary["mean"],
+        yerr=summary["std"],
+        capsize=5,
+    )
+
+    plt.xticks(
+        x,
+        [
             "Low",
             "Medium",
-            "High"
+            "High",
+        ],
+    )
+
+    plt.ylabel(
+        "Average syllables per word"
+    )
+
+    plt.xlabel(
+        "Expertise tier"
+    )
+
+    plt.title(
+        "Lexical Complexity by Expertise Tier"
+    )
+
+    save_figure(
+        "figure_02_syllables_by_tier.png"
+    )
+
+
+# ============================================================
+# Figure 3
+# Flesch-Kincaid grade distribution
+# ============================================================
+
+if "fk_grade" in df.columns:
+
+    box_data = []
+
+    for tier in TIER_ORDER:
+
+        values = (
+            df.loc[
+                df["expertise_tier"] == tier,
+                "fk_grade",
+            ]
+            .dropna()
+            .astype(float)
+        )
+
+        box_data.append(
+            values
+        )
+
+    plt.figure(
+        figsize=(7, 5)
+    )
+
+    plt.boxplot(
+        box_data,
+        tick_labels=[
+            "Low",
+            "Medium",
+            "High",
         ],
         showfliers=False,
     )
 
-    ax.set_xlabel(
-        "Expected-audience expertise tier"
-    )
-
-    ax.set_ylabel(
+    plt.ylabel(
         "Flesch-Kincaid grade level"
     )
 
-    if result is not None:
-        ax.set_title(
-            "Readability grade level by expertise tier\n"
-            f"H={result['kruskal_h']:.2f}, "
-            f"p={result['p_value']:.3g}"
-        )
-    else:
-        ax.set_title(
-            "Readability grade level by expertise tier"
-        )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
+    plt.xlabel(
+        "Expertise tier"
     )
 
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
+    plt.title(
+        "Flesch-Kincaid Grade-Level Distribution"
     )
 
     save_figure(
-        fig,
-        "figure_02_fk_grade_boxplot.png"
+        "figure_03_fk_grade_distribution.png"
     )
 
 
-def figure_03_word_count(
-    df,
-    primary_results
-):
-    feature = "word_count"
-
-    means = (
-        df.groupby(
-            "expertise_tier"
-        )[feature]
-        .mean()
-        .reindex(
-            TIER_ORDER
-        )
-    )
-
-    sems = (
-        df.groupby(
-            "expertise_tier"
-        )[feature]
-        .sem()
-        .reindex(
-            TIER_ORDER
-        )
-    )
-
-    result = get_primary_row(
-        primary_results,
-        feature
-    )
-
-    fig, ax = plt.subplots(
-        figsize=(7, 5)
-    )
-
-    bars = ax.bar(
-        TIER_ORDER,
-        means.values,
-        yerr=sems.values,
-        capsize=5,
-    )
-
-    for bar, value in zip(
-        bars,
-        means.values
-    ):
-        ax.text(
-            bar.get_x()
-            + bar.get_width() / 2,
-            bar.get_height()
-            + 3,
-            f"{value:.0f}",
-            ha="center",
-            va="bottom",
-            fontsize=9,
-        )
-
-    ax.set_xlabel(
-        "Expected-audience expertise tier"
-    )
-
-    ax.set_ylabel(
-        "Mean post length (words)"
-    )
-
-    if result is not None:
-        ax.set_title(
-            "Post length by expertise tier\n"
-            f"H={result['kruskal_h']:.2f}, "
-            f"p={result['p_value']:.3g}, "
-            f"d={result['cohens_d_high_vs_low']:.3f}"
-        )
-    else:
-        ax.set_title(
-            "Post length by expertise tier"
-        )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
-    )
-
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
-    )
-
-    save_figure(
-        fig,
-        "figure_03_word_count_by_tier.png"
-    )
-
-
-def figure_04_subreddit_heatmap(
-    df
-):
-    metrics = [
-        "avg_syllables_per_word",
-        "fk_grade",
-        "hedge_per_100",
-        "causal_per_100",
-        "mattr",
-        "word_count",
-        "sentiment_compound",
-    ]
-
-    labels = [
-        "Syllables/word",
-        "FK grade",
-        "Hedging/100",
-        "Causal/100",
-        "MATTR",
-        "Word count",
-        "Sentiment",
-    ]
-
-    subset = (
-        df.groupby(
-            "subreddit"
-        )[metrics]
-        .mean()
-    )
-
-    tier_lookup = (
-        df[
-            [
-                "subreddit",
-                "expertise_tier",
-            ]
-        ]
-        .drop_duplicates()
-        .set_index(
-            "subreddit"
-        )[
-            "expertise_tier"
-        ]
-    )
-
-    order = []
-
-    for tier in TIER_ORDER:
-        tier_subreddits = sorted(
-            tier_lookup[
-                tier_lookup == tier
-            ]
-            .index
-            .tolist()
-        )
-
-        order.extend(
-            tier_subreddits
-        )
-
-    subset = subset.reindex(
-        order
-    )
-
-    denominator = (
-        subset.max()
-        - subset.min()
-    )
-
-    denominator = (
-        denominator
-        .replace(
-            0,
-            np.nan
-        )
-    )
-
-    normalized = (
-        subset
-        - subset.min()
-    ) / denominator
-
-    fig, ax = plt.subplots(
-        figsize=(11, 6)
-    )
-
-    image = ax.imshow(
-        normalized.values,
-        aspect="auto",
-        vmin=0,
-        vmax=1,
-    )
-
-    ax.set_xticks(
-        range(
-            len(labels)
-        )
-    )
-
-    ax.set_xticklabels(
-        labels,
-        rotation=35,
-        ha="right",
-    )
-
-    ax.set_yticks(
-        range(
-            len(
-                normalized.index
-            )
-        )
-    )
-
-    ax.set_yticklabels(
-        normalized.index
-    )
-
-    ax.set_title(
-        "Normalized linguistic profiles across subreddits"
-    )
-
-    fig.colorbar(
-        image,
-        ax=ax,
-        label=(
-            "Within-feature normalized mean "
-            "(0 = lowest, 1 = highest)"
-        ),
-    )
-
-    save_figure(
-        fig,
-        "figure_04_subreddit_heatmap.png"
-    )
-
-
-def figure_05_rf_importance(
-    importance_df
-):
-    importance_df = (
-        importance_df
-        .sort_values(
-            "importance",
-            ascending=True
-        )
-    )
-
-    fig, ax = plt.subplots(
-        figsize=(8, 6)
-    )
-
-    ax.barh(
-        importance_df[
-            "feature"
-        ],
-        importance_df[
-            "importance"
-        ],
-    )
-
-    ax.set_xlabel(
-        "Random Forest feature importance"
-    )
-
-    ax.set_title(
-        "Feature importance for expertise-tier classification"
-    )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
-    )
-
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
-    )
-
-    save_figure(
-        fig,
-        "figure_05_random_forest_importance.png"
-    )
-
-
-def figure_06_partial_correlations(
-    partial_df
-):
-    subset = partial_df[
-        partial_df[
-            "covariates"
-        ]
-        == "word_count"
-    ].copy()
-
-    if subset.empty:
-        print(
-            "Skipping partial-correlation figure: "
-            "word_count model not found."
-        )
-        return
-
-    subset = subset.sort_values(
-        "r_partial"
-    )
-
-    fig, ax = plt.subplots(
-        figsize=(9, 6)
-    )
-
-    ax.barh(
-        subset[
-            "feature"
-        ],
-        subset[
-            "r_partial"
-        ],
-    )
-
-    ax.axvline(
-        0,
-        linewidth=0.8,
-    )
-
-    ax.set_xlabel(
-        "Partial correlation with expertise tier\n"
-        "(controlling for word count)"
-    )
-
-    ax.set_title(
-        "Length-adjusted associations with expertise tier"
-    )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
-    )
-
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
-    )
-
-    save_figure(
-        fig,
-        "figure_06_partial_correlations.png"
-    )
-
-
-def figure_07_sentiment_by_subreddit(
-    df
-):
-    sentiment = (
-        df.groupby(
-            "subreddit"
-        )[
-            "sentiment_compound"
-        ]
-        .mean()
-        .sort_values()
-    )
-
-    fig, ax = plt.subplots(
-        figsize=(9, 6)
-    )
-
-    ax.barh(
-        sentiment.index,
-        sentiment.values,
-    )
-
-    ax.axvline(
-        0,
-        linewidth=0.8,
-    )
-
-    ax.set_xlabel(
-        "Mean VADER compound sentiment"
-    )
-
-    ax.set_title(
-        "Compound sentiment by subreddit"
-    )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
-    )
-
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
-    )
-
-    save_figure(
-        fig,
-        "figure_07_sentiment_by_subreddit.png"
-    )
-
-
-def figure_08_acronym_robustness(
-    acronym_df
-):
-    metrics = [
-        (
-            "avg_syllables_per_word",
-            "Original"
-        ),
-        (
-            "avg_syllables_per_word_without_acronyms",
-            "Acronyms removed"
-        ),
-        (
-            "avg_syllables_per_word_acronyms_normalized",
-            "Acronyms normalized"
-        ),
-    ]
-
-    fig, ax = plt.subplots(
-        figsize=(9, 5)
+# ============================================================
+# Figure 4
+# Acronym robustness
+# ============================================================
+
+acronym_metrics = {
+    "Original": (
+        "avg_syllables_per_word"
+    ),
+    "Acronyms removed": (
+        "avg_syllables_per_word_without_acronyms"
+    ),
+    "Acronyms normalized": (
+        "avg_syllables_per_word_acronyms_normalized"
+    ),
+}
+
+available_acronym_metrics = {
+    label: metric
+    for label, metric in acronym_metrics.items()
+    if metric in df.columns
+}
+
+
+if len(
+    available_acronym_metrics
+) >= 2:
+
+    labels = list(
+        available_acronym_metrics.keys()
     )
 
     x = np.arange(
-        len(
-            TIER_ORDER
-        )
+        len(TIER_ORDER)
     )
 
-    width = 0.25
+    width = (
+        0.8
+        / len(labels)
+    )
 
-    for index, (
+    plt.figure(
+        figsize=(9, 5.5)
+    )
+
+    for i, (
+        label,
         metric,
-        label
-    ) in enumerate(metrics):
+    ) in enumerate(
+        available_acronym_metrics.items()
+    ):
 
         means = (
-            acronym_df
-            .groupby(
+            df.groupby(
                 "expertise_tier"
             )[metric]
             .mean()
@@ -721,368 +354,738 @@ def figure_08_acronym_robustness(
             )
         )
 
-        ax.bar(
-            x
-            + (
-                index - 1
-            )
-            * width,
-            means.values,
-            width,
+        offset = (
+            i
+            - (
+                len(labels) - 1
+            ) / 2
+        ) * width
+
+        plt.bar(
+            x + offset,
+            means,
+            width=width,
             label=label,
         )
 
-    ax.set_xticks(
-        x
-    )
-
-    ax.set_xticklabels(
+    plt.xticks(
+        x,
         [
             "Low",
             "Medium",
-            "High"
-        ]
+            "High",
+        ],
     )
 
-    ax.set_ylabel(
-        "Mean syllables per word"
+    plt.xlabel(
+        "Expertise tier"
     )
 
-    ax.set_xlabel(
-        "Expected-audience expertise tier"
+    plt.ylabel(
+        "Average syllables per word"
     )
 
-    ax.set_title(
-        "Acronym robustness of syllable-based lexical complexity"
+    plt.title(
+        "Acronym Robustness of Lexical Complexity"
     )
 
-    ax.legend()
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
-    )
-
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
-    )
+    plt.legend()
 
     save_figure(
-        fig,
-        "figure_08_acronym_robustness.png"
+        "figure_04_acronym_robustness.png"
     )
 
 
-def figure_09_loso_effect_size(
-    loso_df
-):
-    subset = loso_df[
-        loso_df[
-            "metric"
-        ]
-        == "avg_syllables_per_word"
-    ].copy()
+# ============================================================
+# Figure 5
+# LOSO Cohen's d
+# ============================================================
 
-    if subset.empty:
-        print(
-            "Skipping LOSO effect-size figure."
-        )
-        return
-
-    full = subset[
-        subset[
-            "dropped_subreddit"
-        ]
-        == "FULL_DATASET"
-    ]
-
-    loo = subset[
-        subset[
-            "dropped_subreddit"
-        ]
-        != "FULL_DATASET"
-    ].copy()
-
-    loo = loo.sort_values(
-        "dropped_subreddit"
-    )
-
-    fig, ax = plt.subplots(
-        figsize=(11, 5)
-    )
-
-    ax.plot(
-        loo[
-            "dropped_subreddit"
-        ],
-        loo[
-            "d_high_vs_low"
-        ],
-        marker="o",
-    )
-
-    if not full.empty:
-        baseline = (
-            full[
-                "d_high_vs_low"
-            ]
-            .iloc[0]
-        )
-
-        ax.axhline(
-            baseline,
-            linestyle="--",
-            linewidth=1,
-            label=(
-                f"Full dataset d={baseline:.3f}"
-            ),
-        )
-
-        ax.legend()
-
-    ax.set_ylabel(
-        "High-vs-low Cohen's d"
-    )
-
-    ax.set_xlabel(
-        "Subreddit omitted"
-    )
-
-    ax.set_title(
-        "Leave-one-subreddit-out stability of the primary effect"
-    )
-
-    ax.tick_params(
-        axis="x",
-        rotation=45
-    )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
-    )
-
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
-    )
-
-    save_figure(
-        fig,
-        "figure_09_loso_effect_size.png"
-    )
+loso_df = None
 
 
-def figure_10_loso_h_statistic(
-    loso_df
-):
-    subset = loso_df[
-        loso_df[
-            "metric"
-        ]
-        == "avg_syllables_per_word"
-    ].copy()
+if LOSO_ALL_PATH.exists():
 
-    if subset.empty:
-        print(
-            "Skipping LOSO H-statistic figure."
-        )
-        return
-
-    full = subset[
-        subset[
-            "dropped_subreddit"
-        ]
-        == "FULL_DATASET"
-    ]
-
-    loo = subset[
-        subset[
-            "dropped_subreddit"
-        ]
-        != "FULL_DATASET"
-    ].copy()
-
-    loo = loo.sort_values(
-        "dropped_subreddit"
-    )
-
-    fig, ax = plt.subplots(
-        figsize=(11, 5)
-    )
-
-    ax.plot(
-        loo[
-            "dropped_subreddit"
-        ],
-        loo[
-            "kruskal_h"
-        ],
-        marker="o",
-    )
-
-    if not full.empty:
-        baseline = (
-            full[
-                "kruskal_h"
-            ]
-            .iloc[0]
-        )
-
-        ax.axhline(
-            baseline,
-            linestyle="--",
-            linewidth=1,
-            label=(
-                f"Full dataset H={baseline:.2f}"
-            ),
-        )
-
-        ax.legend()
-
-    ax.set_ylabel(
-        "Kruskal-Wallis H"
-    )
-
-    ax.set_xlabel(
-        "Subreddit omitted"
-    )
-
-    ax.set_title(
-        "Leave-one-subreddit-out stability of the primary omnibus statistic"
-    )
-
-    ax.tick_params(
-        axis="x",
-        rotation=45
-    )
-
-    ax.spines[
-        "top"
-    ].set_visible(
-        False
-    )
-
-    ax.spines[
-        "right"
-    ].set_visible(
-        False
-    )
-
-    save_figure(
-        fig,
-        "figure_10_loso_h_statistic.png"
-    )
-
-
-def main():
-    ensure_file(
-        DATA_PATH
-    )
-
-    ensure_file(
-        PRIMARY_RESULTS_PATH
-    )
-
-    ensure_file(
-        PARTIAL_RESULTS_PATH
-    )
-
-    ensure_file(
-        IMPORTANCE_PATH
-    )
-
-    ensure_file(
-        LOSO_PATH
-    )
-
-    df = pd.read_csv(
-        DATA_PATH
-    )
-
-    primary_results = pd.read_csv(
-        PRIMARY_RESULTS_PATH
-    )
-
-    partial_results = pd.read_csv(
-        PARTIAL_RESULTS_PATH
-    )
-
-    importance = pd.read_csv(
-        IMPORTANCE_PATH
-    )
-
-    loso = pd.read_csv(
-        LOSO_PATH
+    loso_df = pd.read_csv(
+        LOSO_ALL_PATH
     )
 
     print(
-        f"Loaded {len(df):,} posts"
+        "Using full LOSO file:",
+        LOSO_ALL_PATH
     )
 
-    figure_01_syllables_by_tier(
-        df,
-        primary_results
+elif LOSO_PRIMARY_PATH.exists():
+
+    loso_df = pd.read_csv(
+        LOSO_PRIMARY_PATH
     )
 
-    figure_02_fk_boxplot(
-        df,
-        primary_results
+    print(
+        "Using primary LOSO file:",
+        LOSO_PRIMARY_PATH
     )
 
-    figure_03_word_count(
-        df,
-        primary_results
+else:
+
+    print(
+        "No LOSO file found."
     )
 
-    figure_04_subreddit_heatmap(
-        df
-    )
 
-    figure_05_rf_importance(
-        importance
-    )
+if (
+    loso_df is not None
+    and not loso_df.empty
+):
 
-    figure_06_partial_correlations(
-        partial_results
-    )
+    # Full all-metric LOSO file
+    if "metric" in loso_df.columns:
 
-    figure_07_sentiment_by_subreddit(
-        df
-    )
-
-    if ACRONYM_DATA_PATH.exists():
-        acronym_df = pd.read_csv(
-            ACRONYM_DATA_PATH
-        )
-
-        figure_08_acronym_robustness(
-            acronym_df
+        syllable_loso = (
+            loso_df[
+                loso_df["metric"]
+                == "avg_syllables_per_word"
+            ]
+            .copy()
         )
 
     else:
-        print(
-            "Skipping acronym robustness figure: "
-            "run analysis/07_acronym_robustness.py first."
+
+        # Compact syllables-only file
+        syllable_loso = (
+            loso_df.copy()
         )
 
-    figure_09_loso_effect_size(
-        loso
+
+    # Support either column naming convention
+    if (
+        "cohens_d_high_vs_low"
+        in syllable_loso.columns
+    ):
+
+        d_column = (
+            "cohens_d_high_vs_low"
+        )
+
+    elif (
+        "d_high_vs_low"
+        in syllable_loso.columns
+    ):
+
+        d_column = (
+            "d_high_vs_low"
+        )
+
+    else:
+
+        d_column = None
+
+
+    if (
+        d_column is not None
+        and
+        "dropped_subreddit"
+        in syllable_loso.columns
+    ):
+
+        syllable_loso = (
+            syllable_loso
+            .dropna(
+                subset=[
+                    d_column
+                ]
+            )
+            .copy()
+        )
+
+        plt.figure(
+            figsize=(10, 5.5)
+        )
+
+        x = np.arange(
+            len(
+                syllable_loso
+            )
+        )
+
+        plt.bar(
+            x,
+            syllable_loso[
+                d_column
+            ],
+        )
+
+        labels = (
+            syllable_loso[
+                "dropped_subreddit"
+            ]
+            .astype(str)
+            .replace(
+                {
+                    "FULL_DATASET":
+                    "Full dataset"
+                }
+            )
+        )
+
+        plt.xticks(
+            x,
+            labels,
+            rotation=45,
+            ha="right",
+        )
+
+        plt.axhline(
+            y=0,
+            linewidth=1,
+        )
+
+        plt.ylabel(
+            "Cohen's d: high vs. low"
+        )
+
+        plt.xlabel(
+            "Subreddit removed"
+        )
+
+        plt.title(
+            "Leave-One-Subreddit-Out Effect Size"
+        )
+
+        save_figure(
+            "figure_05_loso_cohens_d.png"
+        )
+
+
+# ============================================================
+# Figure 6
+# Hedging by expertise tier
+# ============================================================
+
+if "hedge_per_100" in df.columns:
+
+    summary = tier_mean_sd(
+        df,
+        "hedge_per_100",
     )
 
-    figure_10_loso_h_statistic(
-        loso
+    x = np.arange(
+        len(TIER_ORDER)
     )
 
-    print(
-        "\nFigure generation complete."
+    plt.figure(
+        figsize=(7, 5)
+    )
+
+    plt.bar(
+        x,
+        summary["mean"],
+        yerr=summary["std"],
+        capsize=5,
+    )
+
+    plt.xticks(
+        x,
+        [
+            "Low",
+            "Medium",
+            "High",
+        ],
+    )
+
+    plt.xlabel(
+        "Expertise tier"
+    )
+
+    plt.ylabel(
+        "Hedge terms per 100 words"
+    )
+
+    plt.title(
+        "Hedging by Expertise Tier"
+    )
+
+    save_figure(
+        "figure_06_hedging_by_tier.png"
     )
 
 
-if __name__ == "__main__":
-    main()
+# ============================================================
+# Figure 7
+# Compound sentiment by subreddit
+# ============================================================
+
+if (
+    "sentiment_compound"
+    in df.columns
+    and
+    "subreddit"
+    in df.columns
+):
+
+    sentiment_summary = (
+        df.groupby(
+            [
+                "subreddit",
+                "expertise_tier",
+            ]
+        )[
+            "sentiment_compound"
+        ]
+        .mean()
+        .reset_index()
+        .sort_values(
+            "sentiment_compound"
+        )
+    )
+
+    plt.figure(
+        figsize=(10, 6)
+    )
+
+    x = np.arange(
+        len(
+            sentiment_summary
+        )
+    )
+
+    plt.bar(
+        x,
+        sentiment_summary[
+            "sentiment_compound"
+        ],
+    )
+
+    plt.xticks(
+        x,
+        sentiment_summary[
+            "subreddit"
+        ],
+        rotation=45,
+        ha="right",
+    )
+
+    plt.ylabel(
+        "Mean VADER compound sentiment"
+    )
+
+    plt.xlabel(
+        "Subreddit"
+    )
+
+    plt.title(
+        "Compound Sentiment by Subreddit"
+    )
+
+    plt.axhline(
+        y=0,
+        linewidth=1,
+    )
+
+    save_figure(
+        "figure_07_sentiment_by_subreddit.png"
+    )
+
+
+# ============================================================
+# Figure 8
+# Normalized subreddit linguistic profiles
+# ============================================================
+
+heatmap_features = [
+    "fk_grade",
+    "gunning_fog",
+    "smog",
+    "avg_sentence_length",
+    "avg_syllables_per_word",
+    "mattr",
+    "hedge_per_100",
+    "causal_per_100",
+    "sentiment_compound",
+    "word_count",
+]
+
+heatmap_features = [
+    feature
+    for feature in heatmap_features
+    if feature in df.columns
+]
+
+
+if (
+    len(
+        heatmap_features
+    ) >= 2
+    and
+    "subreddit" in df.columns
+):
+
+    profile = (
+        df.groupby(
+            "subreddit"
+        )[
+            heatmap_features
+        ]
+        .mean()
+    )
+
+    available_subreddits = [
+        subreddit
+        for subreddit in SUBREDDIT_ORDER
+        if subreddit
+        in profile.index
+    ]
+
+    remaining = [
+        subreddit
+        for subreddit in profile.index
+        if subreddit
+        not in available_subreddits
+    ]
+
+    profile = profile.reindex(
+        available_subreddits
+        + sorted(
+            remaining
+        )
+    )
+
+    normalized = profile.copy()
+
+    for column in normalized.columns:
+
+        minimum = normalized[
+            column
+        ].min()
+
+        maximum = normalized[
+            column
+        ].max()
+
+        if maximum == minimum:
+
+            normalized[
+                column
+            ] = 0.5
+
+        else:
+
+            normalized[
+                column
+            ] = (
+                normalized[
+                    column
+                ]
+                - minimum
+            ) / (
+                maximum
+                - minimum
+            )
+
+
+    plt.figure(
+        figsize=(12, 7)
+    )
+
+    image = plt.imshow(
+        normalized.values,
+        aspect="auto",
+    )
+
+    plt.colorbar(
+        image,
+        label=(
+            "Normalized value "
+            "(0 = lowest, 1 = highest)"
+        ),
+    )
+
+    plt.xticks(
+        np.arange(
+            len(
+                normalized.columns
+            )
+        ),
+        normalized.columns,
+        rotation=45,
+        ha="right",
+    )
+
+    plt.yticks(
+        np.arange(
+            len(
+                normalized.index
+            )
+        ),
+        normalized.index,
+    )
+
+    plt.title(
+        "Normalized Linguistic Profiles "
+        "Across Subreddits"
+    )
+
+    save_figure(
+        "figure_08_subreddit_feature_heatmap.png"
+    )
+
+
+# ============================================================
+# Figure 9
+# Partial correlations controlling for word count
+# ============================================================
+
+if PARTIAL_RESULTS_PATH.exists():
+
+    partial = pd.read_csv(
+        PARTIAL_RESULTS_PATH
+    )
+
+    required_partial_columns = {
+        "feature",
+        "covariates",
+        "r_partial",
+    }
+
+    if required_partial_columns.issubset(
+        partial.columns
+    ):
+
+        length_controlled = (
+            partial[
+                partial["covariates"]
+                == "word_count"
+            ]
+            .copy()
+        )
+
+        if not length_controlled.empty:
+
+            length_controlled = (
+                length_controlled
+                .sort_values(
+                    "r_partial"
+                )
+            )
+
+            plt.figure(
+                figsize=(9, 6)
+            )
+
+            y = np.arange(
+                len(
+                    length_controlled
+                )
+            )
+
+            plt.barh(
+                y,
+                length_controlled[
+                    "r_partial"
+                ],
+            )
+
+            plt.yticks(
+                y,
+                length_controlled[
+                    "feature"
+                ],
+            )
+
+            plt.axvline(
+                x=0,
+                linewidth=1,
+            )
+
+            plt.xlabel(
+                "Partial correlation with "
+                "expertise tier"
+            )
+
+            plt.ylabel(
+                "Linguistic feature"
+            )
+
+            plt.title(
+                "Partial Correlations "
+                "Controlling for Word Count"
+            )
+
+            save_figure(
+                "figure_09_partial_correlations.png"
+            )
+
+
+# ============================================================
+# Figure 10
+# Random Forest feature importance
+# ============================================================
+
+if RF_IMPORTANCE_PATH.exists():
+
+    importance = pd.read_csv(
+        RF_IMPORTANCE_PATH
+    )
+
+    if {
+        "feature",
+        "importance",
+    }.issubset(
+        importance.columns
+    ):
+
+        importance = (
+            importance
+            .sort_values(
+                "importance",
+                ascending=True,
+            )
+        )
+
+        plt.figure(
+            figsize=(9, 6)
+        )
+
+        y = np.arange(
+            len(
+                importance
+            )
+        )
+
+        plt.barh(
+            y,
+            importance[
+                "importance"
+            ],
+        )
+
+        plt.yticks(
+            y,
+            importance[
+                "feature"
+            ],
+        )
+
+        plt.xlabel(
+            "Random Forest feature importance"
+        )
+
+        plt.ylabel(
+            "Feature"
+        )
+
+        plt.title(
+            "Random Forest Feature Importance"
+        )
+
+        save_figure(
+            "figure_10_random_forest_importance.png"
+        )
+
+
+# ============================================================
+# Optional supplementary LOSO H-statistic figure
+# ============================================================
+
+if (
+    loso_df is not None
+    and not loso_df.empty
+):
+
+    if "metric" in loso_df.columns:
+
+        syllable_loso = (
+            loso_df[
+                loso_df["metric"]
+                == "avg_syllables_per_word"
+            ]
+            .copy()
+        )
+
+    else:
+
+        syllable_loso = (
+            loso_df.copy()
+        )
+
+
+    if (
+        "kruskal_h"
+        in syllable_loso.columns
+        and
+        "dropped_subreddit"
+        in syllable_loso.columns
+    ):
+
+        syllable_loso = (
+            syllable_loso
+            .dropna(
+                subset=[
+                    "kruskal_h"
+                ]
+            )
+        )
+
+        plt.figure(
+            figsize=(10, 5.5)
+        )
+
+        x = np.arange(
+            len(
+                syllable_loso
+            )
+        )
+
+        plt.bar(
+            x,
+            syllable_loso[
+                "kruskal_h"
+            ],
+        )
+
+        labels = (
+            syllable_loso[
+                "dropped_subreddit"
+            ]
+            .astype(str)
+            .replace(
+                {
+                    "FULL_DATASET":
+                    "Full dataset"
+                }
+            )
+        )
+
+        plt.xticks(
+            x,
+            labels,
+            rotation=45,
+            ha="right",
+        )
+
+        plt.ylabel(
+            "Kruskal-Wallis H"
+        )
+
+        plt.xlabel(
+            "Subreddit removed"
+        )
+
+        plt.title(
+            "Leave-One-Subreddit-Out "
+            "Kruskal-Wallis Statistic"
+        )
+
+        save_figure(
+            "supplementary_loso_kruskal_h.png"
+        )
+
+
+print(
+    "\nFigure generation complete."
+)
+
+print(
+    "Figures saved to:",
+    FIGURES_DIR
+)
