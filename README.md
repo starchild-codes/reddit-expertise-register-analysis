@@ -2,7 +2,9 @@
 
 Computational linguistic analysis of **1,778 highly scored Reddit posts** from nine communities grouped by expected-audience expertise.
 
-The repository contains the full analysis pipeline, reproducibility outputs, robustness checks, classification experiments, and generated figures.
+The repository contains the full analysis pipeline, reproducibility outputs, robustness checks, classification experiments, and generated figures. The text-bearing input data are intentionally not redistributed; see [DATA_CODE_AVAILABILITY.md](DATA_CODE_AVAILABILITY.md).
+
+The analyses are reproducible conditional on access to the historical working dataset. A fresh clone can inspect the released results and rerun the pipeline after a compatible local input file is supplied, but cannot recreate all 1,778 observations from the repository alone.
 
 ---
 
@@ -261,7 +263,7 @@ data/reddit_posts_features.csv
 data/reddit_posts_features_acronyms.csv
 ```
 
-The committed repository contains the numerical outputs required to inspect the analyses without including the full post-text dataset.
+The committed repository contains the numerical outputs required to inspect the analyses without including the full post-text dataset. The absence of the 1,778 posts is intentional: cleaned Reddit text can remain searchable or identifying even after direct identifiers are removed.
 
 ---
 
@@ -304,6 +306,8 @@ num_comments
 word_count
 text_clean
 ```
+
+The repository does not include this file. See [DATA_CODE_AVAILABILITY.md](DATA_CODE_AVAILABILITY.md) for the reproducibility boundary and the conditions under which the historical dataset may be requested.
 
 ### 3. Run the pipeline
 
@@ -413,6 +417,12 @@ Citation metadata are stored in:
 
 ```text
 CITATION.cff
+```
+
+Data and code availability details are documented in:
+
+```text
+DATA_CODE_AVAILABILITY.md
 ```
 
 ---

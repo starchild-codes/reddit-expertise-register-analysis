@@ -98,9 +98,7 @@ def run_three_class_models(df):
 
     rows = []
 
-    # ============================================================
-    # LOGISTIC REGRESSION
-    # ============================================================
+    # Logistic regression.
 
     logistic = LogisticRegression(
         max_iter=1000,
@@ -193,9 +191,7 @@ def run_three_class_models(df):
         CONFUSION_OUTPUT_PATH
     )
 
-    # ============================================================
-    # RANDOM FOREST
-    # ============================================================
+    # Random forest.
 
     random_forest = RandomForestClassifier(
         n_estimators=200,
@@ -287,9 +283,7 @@ def run_three_class_models(df):
         index=False
     )
 
-    # ============================================================
-    # SHUFFLED-LABEL BASELINE
-    # ============================================================
+    # Shuffled-label baseline.
 
     rng = np.random.default_rng(
         42

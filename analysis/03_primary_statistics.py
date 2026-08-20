@@ -283,9 +283,7 @@ def main():
     )
 
 
-    # ========================================================
-    # BH correction across the 14 primary omnibus tests
-    # ========================================================
+    # BH correction across the 14 primary omnibus tests.
 
     valid_mask = (
         results[

@@ -108,9 +108,7 @@ def main():
             f"{sorted(missing)}"
         )
 
-    # ------------------------------------------------------------
-    # KEEP ONLY CANONICAL SOURCE VARIABLES
-    # ------------------------------------------------------------
+    # Keep only canonical source variables.
 
     columns_to_drop = [
         column
@@ -140,9 +138,7 @@ def main():
         canonical_columns
     ].copy()
 
-    # ------------------------------------------------------------
-    # BASIC CLEANING
-    # ------------------------------------------------------------
+    # Basic cleaning.
 
     df["subreddit"] = (
         df["subreddit"]
@@ -175,9 +171,7 @@ def main():
             errors="coerce",
         )
 
-    # ------------------------------------------------------------
-    # REMOVE INVALID ROWS
-    # ------------------------------------------------------------
+    # Remove invalid rows.
 
     before = len(df)
 
@@ -206,9 +200,7 @@ def main():
         f"Removed {removed:,} rows with missing or invalid canonical data"
     )
 
-    # ------------------------------------------------------------
-    # VALIDATION
-    # ------------------------------------------------------------
+    # Validation.
 
     unexpected_subreddits = (
         set(df["subreddit"].unique())
@@ -239,9 +231,7 @@ def main():
             f"Warning: {text_duplicates:,} duplicate clean_text values found"
         )
 
-    # ------------------------------------------------------------
-    # ADD PUBLIC TIER CODE
-    # ------------------------------------------------------------
+    # Add the public tier code.
 
     df["tier_code"] = (
         df["expertise_tier"]
@@ -263,9 +253,7 @@ def main():
         output_columns
     ]
 
-    # ------------------------------------------------------------
-    # SUMMARY CHECKS
-    # ------------------------------------------------------------
+    # Summary checks.
 
     print("\nTier counts:")
     print(
@@ -320,9 +308,7 @@ def main():
                 f"{expected_count} rows but found {observed}."
             )
 
-    # ------------------------------------------------------------
-    # SAVE
-    # ------------------------------------------------------------
+    # Save the cleaned data.
 
     OUTPUT_PATH.parent.mkdir(
         parents=True,

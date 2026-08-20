@@ -4,9 +4,7 @@ import pandas as pd
 from statsmodels.stats.multitest import multipletests
 
 
-# ============================================================
-# Paths
-# ============================================================
+# Paths.
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -43,9 +41,7 @@ OUTPUT_PATH = (
 )
 
 
-# ============================================================
-# Helpers
-# ============================================================
+# Helpers.
 
 def apply_bh(
     df,
@@ -143,19 +139,14 @@ def normalize_feature_column(
     return result
 
 
-# ============================================================
-# Family 1
-# Kruskal-Wallis omnibus tests
-# ============================================================
+# Family 1: Kruskal-Wallis omnibus tests.
 
 def build_omnibus_family():
 
     frames = []
 
 
-    # --------------------------------------------------------
-    # Main linguistic measures
-    # --------------------------------------------------------
+    # Main linguistic measures.
 
     if not PRIMARY_PATH.exists():
 
@@ -215,9 +206,7 @@ def build_omnibus_family():
     )
 
 
-    # --------------------------------------------------------
-    # Acronym robustness omnibus tests
-    # --------------------------------------------------------
+    # Acronym robustness omnibus tests.
 
     if ACRONYM_PATH.exists():
 
@@ -334,19 +323,14 @@ def build_omnibus_family():
     return omnibus
 
 
-# ============================================================
-# Family 2
-# Dunn metric-by-tier-pair comparisons
-# ============================================================
+# Family 2: Dunn metric-by-tier-pair comparisons.
 
 def build_dunn_family():
 
     frames = []
 
 
-    # --------------------------------------------------------
-    # Main Dunn tests
-    # --------------------------------------------------------
+    # Main Dunn tests.
 
     if not POSTHOC_PATH.exists():
 
@@ -408,9 +392,7 @@ def build_dunn_family():
     )
 
 
-    # --------------------------------------------------------
-    # Acronym robustness Dunn tests
-    # --------------------------------------------------------
+    # Acronym robustness Dunn tests.
 
     if ACRONYM_DUNN_PATH.exists():
 
@@ -545,10 +527,7 @@ def build_dunn_family():
     return dunn
 
 
-# ============================================================
-# Family 3
-# Partial correlations
-# ============================================================
+# Family 3: partial correlations.
 
 def build_partial_families():
 
@@ -592,10 +571,7 @@ def build_partial_families():
     frames = []
 
 
-    # --------------------------------------------------------
-    # Primary partial-correlation family:
-    # control for post length / word count
-    # --------------------------------------------------------
+    # Primary partial-correlation family: control for post length / word count.
 
     word_count = (
         partial[
@@ -645,9 +621,7 @@ def build_partial_families():
         )
 
 
-    # --------------------------------------------------------
-    # Acronym-density robustness partial correlation
-    # --------------------------------------------------------
+    # Acronym-density robustness partial correlation.
 
     acronym_model = (
         partial[
@@ -720,9 +694,7 @@ def build_partial_families():
     )
 
 
-# ============================================================
-# Main
-# ============================================================
+# Main.
 
 def main():
 
@@ -753,9 +725,7 @@ def main():
     )
 
 
-    # ========================================================
-    # Combine canonical FDR output
-    # ========================================================
+    # Combine canonical FDR output.
 
     combined = pd.concat(
         [

@@ -8,9 +8,7 @@ import scikit_posthocs as sp
 from scipy import stats
 
 
-# ============================================================
-# Paths
-# ============================================================
+# Paths.
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -45,9 +43,7 @@ PARTIAL_OUTPUT_PATH = (
 )
 
 
-# ============================================================
-# Configuration
-# ============================================================
+# Configuration.
 
 TIER_ORDER = [
     "low",
@@ -77,9 +73,7 @@ VOWELS = set(
 )
 
 
-# ============================================================
-# Historical/custom syllable counting
-# ============================================================
+# Historical/custom syllable counting.
 
 def count_syllables_word(word):
     """
@@ -177,9 +171,7 @@ def avg_syllables_per_word_custom(text):
     )
 
 
-# ============================================================
-# Acronym-feature computation
-# ============================================================
+# Acronym-feature computation.
 
 def compute_acronym_metrics(text):
 
@@ -220,9 +212,7 @@ def compute_acronym_metrics(text):
         acronym_density = 0.0
 
 
-    # --------------------------------------------------------
-    # Acronyms removed
-    # --------------------------------------------------------
+    # Acronyms removed.
 
     text_without_acronyms = (
         ACRONYM_RE.sub(
@@ -253,9 +243,7 @@ def compute_acronym_metrics(text):
         )
 
 
-    # --------------------------------------------------------
-    # Acronyms normalized
-    # --------------------------------------------------------
+    # Acronyms normalized.
 
     text_normalized = (
         ACRONYM_RE.sub(
@@ -280,7 +268,7 @@ def compute_acronym_metrics(text):
         )
 
 
-    # Do NOT round these observation-level values.
+# Do not round these observation-level values.
     return {
         "acronym_count":
             acronym_count,
@@ -313,9 +301,7 @@ def compute_acronym_metrics(text):
     }
 
 
-# ============================================================
-# Statistical helpers
-# ============================================================
+# Statistical helpers.
 
 def cohens_d_high_vs_low(
     df,
@@ -480,9 +466,7 @@ def run_partial_correlation(
     }
 
 
-# ============================================================
-# Main
-# ============================================================
+# Main.
 
 def main():
 
@@ -524,9 +508,7 @@ def main():
         )
 
 
-    # ========================================================
-    # Normalize and validate tier labels
-    # ========================================================
+    # Normalize and validate tier labels.
 
     df["expertise_tier"] = (
         df["expertise_tier"]
@@ -577,9 +559,7 @@ def main():
     )
 
 
-    # ========================================================
-    # Compute acronym-derived variables
-    # ========================================================
+    # Compute acronym-derived variables.
 
     acronym_features = (
         df["clean_text"]
@@ -621,9 +601,7 @@ def main():
     )
 
 
-    # ========================================================
-    # Save acronym-enriched feature dataset
-    # ========================================================
+    # Save acronym-enriched feature dataset.
 
     FEATURE_OUTPUT_PATH.parent.mkdir(
         parents=True,
@@ -647,9 +625,7 @@ def main():
     )
 
 
-    # ========================================================
-    # Canonical robustness metrics
-    # ========================================================
+    # Canonical robustness metrics.
 
     robustness_metrics = [
         "acronym_density_per_100_words",
@@ -742,9 +718,7 @@ def main():
         })
 
 
-        # ----------------------------------------------------
-        # Dunn pairwise tests
-        # ----------------------------------------------------
+        # Dunn pairwise tests.
 
         subset = (
             df[
@@ -812,9 +786,7 @@ def main():
     )
 
 
-    # ========================================================
-    # Save canonical robustness summary
-    # ========================================================
+    # Save canonical robustness summary.
 
     CANONICAL_OUTPUT_PATH.parent.mkdir(
         parents=True,
@@ -852,9 +824,7 @@ def main():
     )
 
 
-    # ========================================================
-    # Save Dunn robustness tests
-    # ========================================================
+    # Save Dunn robustness tests.
 
     dunn_df.to_csv(
         DUNN_OUTPUT_PATH,
@@ -872,16 +842,12 @@ def main():
     )
 
 
-    # ========================================================
-    # Partial correlations
-    # ========================================================
+    # Partial correlations.
 
     partial_rows = []
 
 
-    # --------------------------------------------------------
-    # Main syllable measure controlling for word count
-    # --------------------------------------------------------
+    # Main syllable measure controlling for word count.
 
     result = run_partial_correlation(
         df=df,
@@ -901,10 +867,7 @@ def main():
         )
 
 
-    # --------------------------------------------------------
-    # Main syllable measure controlling for word count
-    # plus acronym density
-    # --------------------------------------------------------
+    # Main syllable measure controlling for word count plus acronym density.
 
     result = run_partial_correlation(
         df=df,
@@ -925,9 +888,7 @@ def main():
         )
 
 
-    # --------------------------------------------------------
-    # Acronym-removed measure controlling for word count
-    # --------------------------------------------------------
+    # Acronym-removed measure controlling for word count.
 
     result = run_partial_correlation(
         df=df,
@@ -947,9 +908,7 @@ def main():
         )
 
 
-    # --------------------------------------------------------
-    # Acronym-normalized measure controlling for word count
-    # --------------------------------------------------------
+    # Acronym-normalized measure controlling for word count.
 
     result = run_partial_correlation(
         df=df,
@@ -990,9 +949,7 @@ def main():
     )
 
 
-    # ========================================================
-    # Key-result summary
-    # ========================================================
+    # Key-result summary.
 
     print(
         "\nKey robustness results"

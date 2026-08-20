@@ -32,9 +32,7 @@ TIER_MAP = {
 }
 
 
-# ============================================================
-# Canonical analysis specification
-# ============================================================
+# Canonical analysis specification.
 
 WORD_COUNT_FEATURES = [
     "fk_grade",
@@ -176,9 +174,7 @@ def add_fdr_within_covariate_model(results):
 
 def main():
 
-    # ============================================================
-    # Load acronym-enriched data when available
-    # ============================================================
+    # Load acronym-enriched data when available.
 
     if ACRONYM_INPUT_PATH.exists():
 
@@ -205,9 +201,7 @@ def main():
     )
 
 
-    # ============================================================
-    # Validate tier labels
-    # ============================================================
+    # Validate tier labels.
 
     if "expertise_tier" not in df.columns:
 
@@ -273,10 +267,7 @@ def main():
     )
 
 
-    # ============================================================
-    # MODEL 1
-    # Partial correlations controlling for word count
-    # ============================================================
+    # Model 1: partial correlations controlling for word count.
 
     print(
         "\nPartial correlations controlling "
@@ -326,11 +317,7 @@ def main():
         )
 
 
-    # ============================================================
-    # MODEL 2
-    # Main syllable result controlling for
-    # word count + acronym density
-    # ============================================================
+    # Model 2: main syllable result controlling for word count + acronym density.
 
     acronym_column = (
         "acronym_density_per_100_words"
@@ -386,11 +373,7 @@ def main():
         )
 
 
-    # ============================================================
-    # MODEL 3
-    # Acronym-removal and acronym-normalization
-    # partial correlations controlling for word count
-    # ============================================================
+    # Model 3: acronym-removal and acronym-normalization partial correlations controlling for word count.
 
     available_robustness_features = [
         feature
@@ -433,9 +416,7 @@ def main():
             )
 
 
-    # ============================================================
-    # Assemble output
-    # ============================================================
+    # Assemble output.
 
     results = pd.DataFrame(
         rows

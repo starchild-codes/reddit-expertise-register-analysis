@@ -4,6 +4,11 @@ This directory contains the public data documentation and subreddit-to-tier mapp
 
 The full text-bearing Reddit datasets are intentionally **not committed** to version control.
 
+This is a deliberate data-availability decision, not an omitted pipeline step.
+The public repository is reproducible conditional on access to the historical
+working dataset; a fresh clone alone cannot recreate all 1,778 text-bearing
+observations.
+
 ---
 
 ## Tracked file
@@ -175,3 +180,9 @@ data/reddit_posts_features_acronyms.csv
 ```
 
 This keeps the analysis pipeline, mapping information, numerical outputs, and figures public without automatically redistributing the full text-bearing post dataset.
+
+Researchers may contact the study authors to discuss access to the historical
+working dataset for legitimate research purposes. Any sharing remains subject
+to applicable platform terms, privacy considerations, and the authors' ability
+to provide the data. The repository does not guarantee that full-text access
+will be granted.

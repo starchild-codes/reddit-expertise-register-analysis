@@ -5,9 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-# ============================================================
-# Paths
-# ============================================================
+# Paths.
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -38,9 +36,7 @@ FIGURES_DIR.mkdir(
 )
 
 
-# ============================================================
-# General configuration
-# ============================================================
+# General configuration.
 
 TIER_ORDER = [
     "low",
@@ -96,9 +92,7 @@ def tier_mean_sd(df, metric):
     return summary
 
 
-# ============================================================
-# Load feature dataset
-# ============================================================
+# Load feature dataset.
 
 if ACRONYM_FEATURES_PATH.exists():
     data_path = ACRONYM_FEATURES_PATH
@@ -131,10 +125,7 @@ print(
 )
 
 
-# ============================================================
-# Figure 1
-# Mean word count by expertise tier
-# ============================================================
+# Figure 1: mean word count by expertise tier.
 
 if "word_count" in df.columns:
 
@@ -184,10 +175,7 @@ if "word_count" in df.columns:
     )
 
 
-# ============================================================
-# Figure 2
-# Mean syllables per word by expertise tier
-# ============================================================
+# Figure 2: mean syllables per word by expertise tier.
 
 if "avg_syllables_per_word" in df.columns:
 
@@ -237,10 +225,7 @@ if "avg_syllables_per_word" in df.columns:
     )
 
 
-# ============================================================
-# Figure 3
-# Flesch-Kincaid grade distribution
-# ============================================================
+# Figure 3: Flesch-Kincaid grade distribution.
 
 if "fk_grade" in df.columns:
 
@@ -292,10 +277,7 @@ if "fk_grade" in df.columns:
     )
 
 
-# ============================================================
-# Figure 4
-# Acronym robustness
-# ============================================================
+# Figure 4: acronym robustness.
 
 acronym_metrics = {
     "Original": (
@@ -396,10 +378,7 @@ if len(
     )
 
 
-# ============================================================
-# Figure 5
-# LOSO Cohen's d
-# ============================================================
+# Figure 5: LOSO Cohen's d.
 
 loso_df = None
 
@@ -438,7 +417,7 @@ if (
     and not loso_df.empty
 ):
 
-    # Full all-metric LOSO file
+    # Full all-metric LOSO file.
     if "metric" in loso_df.columns:
 
         syllable_loso = (
@@ -451,13 +430,13 @@ if (
 
     else:
 
-        # Compact syllables-only file
+        # Compact syllables-only file.
         syllable_loso = (
             loso_df.copy()
         )
 
 
-    # Support either column naming convention
+    # Support either column naming convention.
     if (
         "cohens_d_high_vs_low"
         in syllable_loso.columns
@@ -557,10 +536,7 @@ if (
         )
 
 
-# ============================================================
-# Figure 6
-# Hedging by expertise tier
-# ============================================================
+# Figure 6: hedging by expertise tier.
 
 if "hedge_per_100" in df.columns:
 
@@ -610,10 +586,7 @@ if "hedge_per_100" in df.columns:
     )
 
 
-# ============================================================
-# Figure 7
-# Compound sentiment by subreddit
-# ============================================================
+# Figure 7: compound sentiment by subreddit.
 
 if (
     "sentiment_compound"
@@ -687,10 +660,7 @@ if (
     )
 
 
-# ============================================================
-# Figure 8
-# Normalized subreddit linguistic profiles
-# ============================================================
+# Figure 8: normalized subreddit linguistic profiles.
 
 heatmap_features = [
     "fk_grade",
@@ -830,10 +800,7 @@ if (
     )
 
 
-# ============================================================
-# Figure 9
-# Partial correlations controlling for word count
-# ============================================================
+# Figure 9: partial correlations controlling for word count.
 
 if PARTIAL_RESULTS_PATH.exists():
 
@@ -916,10 +883,7 @@ if PARTIAL_RESULTS_PATH.exists():
             )
 
 
-# ============================================================
-# Figure 10
-# Random Forest feature importance
-# ============================================================
+# Figure 10: random forest feature importance.
 
 if RF_IMPORTANCE_PATH.exists():
 
@@ -983,9 +947,7 @@ if RF_IMPORTANCE_PATH.exists():
         )
 
 
-# ============================================================
-# Optional supplementary LOSO H-statistic figure
-# ============================================================
+# Optional supplementary LOSO H-statistic figure.
 
 if (
     loso_df is not None

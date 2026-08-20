@@ -6,9 +6,7 @@ from scipy import stats
 import scikit_posthocs as sp
 
 
-# ============================================================
-# Paths
-# ============================================================
+# Paths.
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
@@ -24,9 +22,7 @@ INFLUENCE_OUTPUT_PATH = RESULTS_DIR / "leave_one_subreddit_out_influential_subre
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 
-# ============================================================
-# Configuration
-# ============================================================
+# Configuration.
 
 TIER_ORDER = ["low", "medium", "high"]
 
@@ -61,9 +57,7 @@ EXPLORATORY_METRICS = [
 ]
 
 
-# ============================================================
-# Helpers
-# ============================================================
+# Helpers.
 
 def cohens_d(group_a, group_b):
     """
@@ -254,9 +248,7 @@ def run_metric_analysis(df, metric, dropped_subreddit):
     }
 
 
-# ============================================================
-# Load data
-# ============================================================
+# Load data.
 
 if ACRONYM_FEATURES_PATH.exists():
     input_path = ACRONYM_FEATURES_PATH
@@ -285,9 +277,7 @@ else:
 df = pd.read_csv(input_path)
 
 
-# ============================================================
-# Validate essential columns
-# ============================================================
+# Validate essential columns.
 
 required_columns = [
     "subreddit",
@@ -331,9 +321,7 @@ if df["tier_numeric"].isna().any():
     )
 
 
-# ============================================================
-# Select metrics actually available
-# ============================================================
+# Select metrics actually available.
 
 candidate_metrics = (
     PRIMARY_METRICS
@@ -371,9 +359,7 @@ for metric in available_metrics:
     print(" -", metric)
 
 
-# ============================================================
-# Full-data baseline + leave-one-subreddit-out analyses
-# ============================================================
+# Full-data baseline and leave-one-subreddit-out analyses.
 
 subreddits = sorted(
     df["subreddit"]
@@ -429,17 +415,13 @@ print(
 print(OUTPUT_PATH)
 
 
-# ============================================================
-# Leave-one-subreddit-out partial correlations
-# ============================================================
+# Leave-one-subreddit-out partial correlations.
 
 partial_rows = []
 
 for dropped_subreddit, subset in analysis_iterations:
 
-    # --------------------------------------------------------
-    # Main syllable result controlling for post length
-    # --------------------------------------------------------
+    # Main syllable result controlling for post length.
 
     if "avg_syllables_per_word" in subset.columns:
 
@@ -457,9 +439,7 @@ for dropped_subreddit, subset in analysis_iterations:
             **result,
         })
 
-    # --------------------------------------------------------
-    # Main syllable result controlling for length + acronym density
-    # --------------------------------------------------------
+    # Main syllable result controlling for length + acronym density.
 
     if (
         "avg_syllables_per_word" in subset.columns
@@ -487,9 +467,7 @@ for dropped_subreddit, subset in analysis_iterations:
             **result,
         })
 
-    # --------------------------------------------------------
-    # Acronym-removed syllables
-    # --------------------------------------------------------
+    # Acronym-removed syllables.
 
     if (
         "avg_syllables_per_word_without_acronyms"
@@ -514,9 +492,7 @@ for dropped_subreddit, subset in analysis_iterations:
             **result,
         })
 
-    # --------------------------------------------------------
-    # Acronym-normalized syllables
-    # --------------------------------------------------------
+    # Acronym-normalized syllables.
 
     if (
         "avg_syllables_per_word_acronyms_normalized"
@@ -541,9 +517,7 @@ for dropped_subreddit, subset in analysis_iterations:
             **result,
         })
 
-    # --------------------------------------------------------
-    # Sentiment robustness
-    # --------------------------------------------------------
+    # Sentiment robustness.
 
     for sentiment_metric in [
         "sentiment_compound",
@@ -580,9 +554,7 @@ print(
 print(PARTIAL_OUTPUT_PATH)
 
 
-# ============================================================
-# Identify most influential subreddit for each metric
-# ============================================================
+# Identify the most influential subreddit for each metric.
 
 influence_rows = []
 
@@ -697,9 +669,7 @@ print(
 print(INFLUENCE_OUTPUT_PATH)
 
 
-# ============================================================
-# Compact console summary for main lexical result
-# ============================================================
+# Compact console summary for the main lexical result.
 
 main = results_df[
     results_df["metric"]

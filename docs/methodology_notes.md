@@ -511,4 +511,4 @@ The repository now contains:
 - subreddit-tier mapping
 - reproducibility documentation
 
-The text-bearing working and intermediate datasets remain local and are not committed to Git.
+The text-bearing working and intermediate datasets remain local and are not committed to Git. The public repository is therefore an auditable, conditional reproducibility package: a fresh clone can inspect the released outputs and rerun the pipeline once a compatible local working dataset is supplied, but cannot recreate all 1,778 observations from the repository alone.
