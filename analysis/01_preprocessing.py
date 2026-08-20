@@ -21,7 +21,7 @@ COLUMN_RENAMES = {
 
 
 DROP_COLUMNS = [
-    # Raw text fields not needed in the public de-identified dataset
+    # Raw text fields not needed in the canonical intermediate dataset
     "title",
     "text",
 
@@ -231,7 +231,7 @@ def main():
             f"Warning: {text_duplicates:,} duplicate clean_text values found"
         )
 
-    # Add the public tier code.
+    # Add the ordinal tier code.
 
     df["tier_code"] = (
         df["expertise_tier"]

@@ -155,12 +155,6 @@ results/leave_one_subreddit_out_partial_correlations.csv
 results/leave_one_subreddit_out_influential_subreddits.csv
 ```
 
-A compact syllables-only summary is also retained as:
-
-```text
-results/leave_one_subreddit_out_primary_syllables.csv
-```
-
 ---
 
 ## Classification
@@ -196,6 +190,7 @@ reddit-expertise-register-analysis/
 ├── README.md
 ├── LICENSE
 ├── CITATION.cff
+├── DATA_CODE_AVAILABILITY.md
 ├── requirements.txt
 ├── .gitignore
 │
