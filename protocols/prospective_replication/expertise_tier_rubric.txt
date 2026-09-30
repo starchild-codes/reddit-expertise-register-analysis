@@ -1,0 +1,8 @@
+EXPERTISE-TIER CODING RUBRIC — OUTCOME-INDEPENDENT
+Use only community metadata collected before linguistic analysis: About/sidebar, rules, stated audience, prerequisite expectations, beginner-content policy, and explicit research/professional/development orientation.
+Never use readability, syllable complexity, jargon density, observed vocabulary, sentence complexity, or any dependent variable.
+LOW: general-public/beginner/casual-user orientation; no prerequisite expectation; basic questions normal.
+MEDIUM: learning/practitioner/application orientation; some technical background useful; implementation/workflow/learning common.
+HIGH: research/development/engineering/subfield orientation; meaningful technical prerequisites or basic-help restrictions.
+AMBIGUOUS: exclude if tier cannot be assigned without inspecting outcome language.
+Best reliability: two independent human coders blind to outcomes; report Cohen's kappa and percent agreement.

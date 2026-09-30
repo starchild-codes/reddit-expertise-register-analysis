@@ -1,35 +1,23 @@
 cff-version: 1.2.0
-message: "If you use this repository, please cite the associated research paper."
-title: "Expertise-Tiered AI Discourse on Reddit: A Computational Linguistic Analysis of Community-Rewarded Register Variation"
+message: "If you use this repository, please cite the associated manuscript."
+title: "Community Technical Orientation and Linguistic Register in AI Reddit Communities: A Cluster-Aware Exploratory Reanalysis"
 type: software
 authors:
   - family-names: "Srivastava"
     given-names: "Anshima"
-
 repository-code: "https://github.com/starchild-codes/reddit-expertise-register-analysis"
-
-abstract: >
-  This repository contains the data-processing, statistical-analysis,
-  robustness-testing, classification, and visualization code associated
-  with the study "Expertise-Tiered AI Discourse on Reddit: A Computational
-  Linguistic Analysis of Community-Rewarded Register Variation."
-
+abstract: "Cluster-aware exploratory reanalysis of linguistic register in nine AI-related Reddit communities."
 keywords:
   - computational linguistics
   - Reddit
   - register variation
-  - artificial intelligence
-  - expertise
-  - readability
-  - lexical complexity
-  - sentiment analysis
-
+  - clustered inference
+  - community technical orientation
 license: MIT
-
 preferred-citation:
   type: article
   authors:
     - family-names: "Srivastava"
       given-names: "Anshima"
-  title: "Expertise-Tiered AI Discourse on Reddit: A Computational Linguistic Analysis of Community-Rewarded Register Variation"
+  title: "Community Technical Orientation and Linguistic Register in AI Reddit Communities: A Cluster-Aware Exploratory Reanalysis"
   year: 2026

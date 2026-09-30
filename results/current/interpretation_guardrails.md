@@ -1,0 +1,1 @@
+Primary evidence is exploratory and clustered by subreddit. No planned outcome survives BH FDR in the AI-relevant subset. Treat tier labels as community technical-orientation labels, not individual expertise. Do not claim causal audience adaptation.

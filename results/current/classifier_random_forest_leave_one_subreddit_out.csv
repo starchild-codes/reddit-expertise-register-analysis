@@ -1,0 +1,10 @@
+model,held_out_subreddit,n_test,accuracy
+random_forest,ChatGPT,182,0.42857142857142855
+random_forest,Futurology,81,0.024691358024691357
+random_forest,GenerativeAI,172,0.0
+random_forest,LocalLLaMA,172,0.19767441860465115
+random_forest,MachineLearning,154,0.2792207792207792
+random_forest,OpenAI,181,0.36464088397790057
+random_forest,deeplearning,165,0.3151515151515151
+random_forest,explainlikeimfive,4,0.25
+random_forest,learnmachinelearning,188,0.18617021276595744

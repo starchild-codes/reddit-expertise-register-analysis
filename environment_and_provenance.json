@@ -1,0 +1,10 @@
+{
+  "analysis_scope": "Cluster-aware exploratory reanalysis of the existing 1,778-post, nine-subreddit corpus",
+  "unit_of_inference": "subreddit",
+  "ai_screened_posts": 1299,
+  "planned_outcomes": 10,
+  "random_seed_for_grouped_permutation": 20260927,
+  "historical_result_status": "preserved derived outputs; not newly recomputed from titles",
+  "known_reproducibility_limitations": "Complete post bodies and original post-level linguistic-feature matrix are not distributed.",
+  "prospective_protocol_status": "frozen future protocol; contributes no observations"
+}

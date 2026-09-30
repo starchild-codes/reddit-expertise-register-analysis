@@ -1,0 +1,7 @@
+subreddit,stage,reason,recorded_at
+ArtificialInteligence,tiering,Community description spans beginner through advanced resources and general discussion; no single rubric tier can be assigned without outcome inspection,2026-09-27T00:00:00+05:30
+GenerativeAI,tiering,General umbrella community with insufficiently specific audience orientation for an outcome-blind tier,2026-09-27T00:00:00+05:30
+singularity,tiering,Future and society orientation is not an expertise tier under the rubric,2026-09-27T00:00:00+05:30
+OpenAI,tiering,Product and company discussion has mixed public and technical orientation; excluded as ambiguous,2026-09-27T00:00:00+05:30
+LLMDevs,tiering,Activity and public metadata must be rechecked before any replacement use; not needed for frozen balanced frame,2026-09-27T00:00:00+05:30
+mlfundamentalresearch,tiering,Activity and public metadata must be rechecked before any replacement use; not needed for frozen balanced frame,2026-09-27T00:00:00+05:30

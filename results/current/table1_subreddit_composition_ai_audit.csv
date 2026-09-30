@@ -1,0 +1,10 @@
+expertise_tier,subreddit,total_posts,ai_relevant_posts,missing_title,duplicate_titles,ai_relevance_rate
+high,LocalLLaMA,197,172,0,0,0.8730964467005076
+high,MachineLearning,198,154,0,0,0.7777777777777778
+high,deeplearning,193,165,0,0,0.8549222797927462
+low,Futurology,200,81,0,1,0.405
+low,GenerativeAI,198,172,0,0,0.8686868686868687
+low,explainlikeimfive,200,4,0,0,0.02
+medium,ChatGPT,200,182,0,0,0.91
+medium,OpenAI,192,181,0,0,0.9427083333333334
+medium,learnmachinelearning,200,188,0,0,0.94

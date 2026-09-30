@@ -1,0 +1,10 @@
+model,held_out_subreddit,n_test,accuracy
+logistic_regression,ChatGPT,182,0.47802197802197804
+logistic_regression,Futurology,81,0.20987654320987653
+logistic_regression,GenerativeAI,172,0.22674418604651161
+logistic_regression,LocalLLaMA,172,0.38953488372093026
+logistic_regression,MachineLearning,154,0.37012987012987014
+logistic_regression,OpenAI,181,0.46408839779005523
+logistic_regression,deeplearning,165,0.44242424242424244
+logistic_regression,explainlikeimfive,4,0.5
+logistic_regression,learnmachinelearning,188,0.18617021276595744

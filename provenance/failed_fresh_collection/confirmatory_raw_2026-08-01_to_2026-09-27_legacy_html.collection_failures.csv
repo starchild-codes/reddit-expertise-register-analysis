@@ -1,0 +1,25 @@
+subreddit,attempted_window_start,attempted_window_end,number_discovered,number_retrievable,failure_type,failure_category,recorded_at
+ChatGPT,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:58:06.963286+00:00
+ClaudeAI,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:58:15.562376+00:00
+GeminiAI,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:58:23.893414+00:00
+Bard,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:58:35.436181+00:00
+SunoAI,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:58:44.318236+00:00
+Midjourney,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:58:54.873360+00:00
+StableDiffusion,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:59:05.681113+00:00
+perplexity_ai,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:59:16.066986+00:00
+learnmachinelearning,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:59:26.660175+00:00
+MLQuestions,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:59:36.147856+00:00
+ChatGPTCoding,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:59:48.280477+00:00
+aiagents,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T15:59:57.736119+00:00
+PromptEngineering,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:00:06.721871+00:00
+LangChain,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:00:15.772293+00:00
+ollama,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:00:26.101124+00:00
+ClaudeCode,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:00:34.531304+00:00
+LocalLLaMA,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:00:43.977329+00:00
+MachineLearning,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:00:53.136736+00:00
+deeplearning,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:01:03.787400+00:00
+reinforcementlearning,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:01:12.758271+00:00
+computervision,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:01:21.950624+00:00
+MLOps,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:01:32.630962+00:00
+LanguageTechnology,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:01:42.668372+00:00
+MLSystems,2026-08-01T00:00:00+00:00,2026-09-27T00:00:00+00:00,0,0,fewer than target posts retrievable in common window,content scarcity,2026-09-27T16:01:52.208030+00:00

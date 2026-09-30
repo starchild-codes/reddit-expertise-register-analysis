@@ -1,0 +1,9 @@
+{
+  "python": "3.12.10 (tags/v3.12.10:0cc8128, Apr  8 2025, 12:21:36) [MSC v.1943 64 bit (AMD64)]",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "seed": 20260927,
+  "pandas": "2.2.3",
+  "numpy": "2.1.1",
+  "analysis_scope": "exploratory, subreddit-level orientation labels; no individual expertise or causal claims",
+  "unavailable_recomputation": "post bodies and post-level feature matrix are absent from the retained input"
+}

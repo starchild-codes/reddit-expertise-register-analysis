@@ -1,0 +1,7 @@
+{
+  "start": "2026-08-01T00:00:00+00:00",
+  "end": "2026-09-27T00:00:00+00:00",
+  "target_per_subreddit": 125,
+  "rule": "chronological /new discovery; timestamp-systematic selection; never score ranked",
+  "method": "Playwright ordinary public Reddit pages"
+}
