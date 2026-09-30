@@ -1,4 +1,4 @@
-# Community Technical Orientation and Linguistic Register in AI Reddit Communities
+# Community Technical Orientation and Linguistic Register in AI Reddit Communities: A Cluster-Aware Exploratory Reanalysis
 
 This repository accompanies the final submitted manuscript, *Community Technical Orientation and Linguistic Register in AI Reddit Communities: A Cluster-Aware Exploratory Reanalysis*.
 
