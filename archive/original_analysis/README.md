@@ -8,3 +8,7 @@ inferential basis of the submitted manuscript.
 The current evidence is in `analysis/current`, `results/current`, and
 `figures/current`. Do not cite or treat files in this archive as current
 results.
+
+`manuscripts/Final_Revised_Reddit_Manuscript_Convergence.docx` is the prior
+manuscript version. The strengthened controlling manuscript is the single
+document in `docs/`.

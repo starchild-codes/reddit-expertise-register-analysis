@@ -7,6 +7,7 @@
 - No planned linguistic outcome survives BH FDR correction under exact subreddit-level permutation inference.
 - Topic- and log-length-adjusted cluster results likewise contain no FDR-significant outcome.
 - Grouped classifiers do not demonstrate reliable generalization to unseen communities.
+- The two external-rater mappings differ from the original author mapping, yet neither produces a BH FDR-significant linguistic outcome.
 
 ## Claims removed during major revision
 
@@ -24,6 +25,7 @@
 
 - The community-orientation labels are coarse subreddit-level intended-audience labels.
 - Topic and length adjustment are exploratory sensitivity analyses on the preserved feature outputs.
+- External ratings provide a robustness check on the tier definition; they do not establish a uniquely correct community taxonomy.
 
 ## Claims explicitly not supported
 
@@ -31,4 +33,5 @@
 - Causal audience adaptation.
 - Generalizable three-tier linguistic effects.
 - Reliable prediction of tier in unseen communities.
+- That the external ratings prove tier validity or fully validate the original author mapping.
 - Any contribution of the uncollected prospective 24-community protocol to the present results.

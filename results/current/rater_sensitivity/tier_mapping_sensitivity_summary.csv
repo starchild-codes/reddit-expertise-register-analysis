@@ -1,0 +1,3 @@
+mapping_name,low_n,medium_n,high_n,smallest_raw_p,smallest_p_outcome,corresponding_fdr_q,any_q_below_05,adjusted_analysis_status
+rater1,2,4,3,0.02063492063492063,causal_per_100,0.2063492063492063,False,not_publicly_recomputable: subreddit-level topic/length-adjusted residual means are not included in the public repository
+rater2,1,5,3,0.0496031746031746,causal_per_100,0.3835978835978837,False,not_publicly_recomputable: subreddit-level topic/length-adjusted residual means are not included in the public repository

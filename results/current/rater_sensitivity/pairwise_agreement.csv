@@ -1,0 +1,4 @@
+comparison,n_communities,n_agreed,raw_agreement,cohen_kappa
+author_original_vs_rater1,9,6,0.6666666666666666,0.4999999999999999
+author_original_vs_rater2,9,7,0.7777777777777778,0.6666666666666666
+rater1_vs_rater2,9,8,0.8888888888888888,0.82

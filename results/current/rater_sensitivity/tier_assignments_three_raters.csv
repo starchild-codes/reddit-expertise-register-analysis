@@ -1,0 +1,10 @@
+subreddit,author_original_tier,rater1_tier,rater2_tier
+explainlikeimfive,low,low,low
+Futurology,low,medium,medium
+GenerativeAI,low,medium,medium
+ChatGPT,medium,low,medium
+OpenAI,medium,medium,medium
+learnmachinelearning,medium,medium,medium
+LocalLLaMA,high,high,high
+MachineLearning,high,high,high
+deeplearning,high,high,high

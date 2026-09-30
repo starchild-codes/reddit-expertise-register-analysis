@@ -5,5 +5,6 @@
   "pandas": "2.2.3",
   "numpy": "2.1.1",
   "analysis_scope": "exploratory, subreddit-level orientation labels; no individual expertise or causal claims",
-  "unavailable_recomputation": "post bodies and post-level feature matrix are absent from the retained input"
+  "unavailable_recomputation": "post bodies and post-level feature matrix are absent from the retained input",
+  "external_rater_sensitivity": "exact enumeration over 1,260 Rater 1 allocations and 504 Rater 2 allocations; no random sampling; adjusted residual means are not publicly released"
 }

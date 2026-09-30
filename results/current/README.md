@@ -2,7 +2,7 @@
 
 This directory is the canonical, manuscript-matched release of aggregate
 outputs for the exploratory existing-corpus reanalysis. The controlling
-manuscript is `docs/Final_Revised_Reddit_Manuscript_Convergence.docx`.
+manuscript is `docs/Community_Technical_Orientation_Convergence_Strengthened.docx`.
 
 The current results are preserved outputs rather than a rerun from raw post
 bodies: the released package intentionally excludes post text, titles,
@@ -18,3 +18,5 @@ Start with:
   classifier metrics and subreddit-label permutation tests.
 - `topic_overlap_by_tier.csv` and `topic_terms_labels.csv` — topic-control
   evidence and labels.
+- `rater_sensitivity/` — independently supplied tier assignments, agreement
+  statistics, and reproducible fixed-size alternative-tier permutation tests.
